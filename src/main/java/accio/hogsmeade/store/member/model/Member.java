@@ -11,16 +11,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.*;
-import static lombok.AccessLevel.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = PROTECTED)
+//@NoArgsConstructor
 public class Member extends TimeBaseEntity implements UserDetails {
 
     @Id @GeneratedValue
@@ -42,14 +42,16 @@ public class Member extends TimeBaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Grade grade;
-    @Builder.Default
+
     @ElementCollection(fetch = EAGER)
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, updatable = false, length = 20)
-    private List<Authority> authorities;
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false, updatable = false, length = 20)
+
 
     @Builder
-    public Member(Long id, String loginId, String loginPw, String name, String tel, Address address, Identity identity, Grade grade, List<Authority> authorities) {
+    public Member(Long id, String loginId, String loginPw, String name, String tel, Address address, Identity identity, Grade grade, List<String> roles) {
         this.id = id;
         this.loginId = loginId;
         this.loginPw = loginPw;
@@ -58,14 +60,18 @@ public class Member extends TimeBaseEntity implements UserDetails {
         this.address = address;
         this.identity = identity;
         this.grade = grade;
-        this.authorities = authorities;
+        this.roles = roles;
+    }
+
+    public Member() {
+
     }
 
     //== 스프링 시큐리티 ==//
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities.stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.toString()))
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
 
