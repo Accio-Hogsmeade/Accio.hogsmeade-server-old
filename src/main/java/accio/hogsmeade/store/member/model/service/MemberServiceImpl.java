@@ -51,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
                 .address(address)
                 .identity(dto.getIdentity())
                 .grade(QUAFFLE)
-                .authorities(Collections.singletonList(dto.getAuthority()))
+                .roles(Collections.singletonList(dto.getAuthority().toString()))
                 .build();
 
         Member savedMember = memberRepository.save(member);
