@@ -1,5 +1,6 @@
 package accio.hogsmeade.store.member.model.service;
 
+import accio.hogsmeade.store.jwt.TokenInfo;
 import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -7,4 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface MemberService {
 
     Long joinMember(AddMemberDto dto);
+
+    TokenInfo login(String loginId, String loginPw);
 }
