@@ -1,12 +1,15 @@
 package accio.hogsmeade.store.member.controller;
 
+import accio.hogsmeade.store.jwt.TokenInfo;
 import accio.hogsmeade.store.member.controller.dto.JoinMemberRequest;
+import accio.hogsmeade.store.member.controller.dto.LoginRequest;
 import accio.hogsmeade.store.member.model.Authority;
 import accio.hogsmeade.store.member.model.Identity;
 import accio.hogsmeade.store.member.model.service.MemberService;
 import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,5 +43,11 @@ public class MemberApiController {
         Long memberId = memberService.joinMember(addMemberDto);
         log.debug("memberId = {}", memberId);
         return 1;
+    }
+
+    @PostMapping("/login")
+    public TokenInfo login(@RequestBody LoginRequest request) {
+        TokenInfo tokenInfo = memberService.login(request.getLoginId(), request.getLoginPw());
+        return tokenInfo;
     }
 }
