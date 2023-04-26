@@ -4,6 +4,7 @@ import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.member.model.service.dto.EditLoginPwDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,11 @@ class MemberServiceTest {
     private MemberService memberService;
     @Autowired
     private MemberRepository memberRepository;
-    
-    @Test
-    @DisplayName("비밀번호 수정")
-    void editLoginPw() {
-        //given
+
+    private Member savedMember;
+
+    @BeforeEach
+    void beforeEach() {
         Address address = Address.builder().mainAddress("mainAddress").detailAddress("detailAddress").build();
         Member member = Member.builder()
                 .loginId("harry")
@@ -42,7 +43,13 @@ class MemberServiceTest {
                 .grade(QUAFFLE)
                 .roles(Collections.singletonList("MEMBER"))
                 .build();
-        Member savedMember = memberRepository.save(member);
+        savedMember = memberRepository.save(member);
+    }
+
+    @Test
+    @DisplayName("비밀번호 수정")
+    void editLoginPw() {
+        //given
         EditLoginPwDto dto = EditLoginPwDto.builder()
                 .oldLoginPw("abcd1234!")
                 .newLoginPw("qwer1234@")
@@ -66,6 +73,32 @@ class MemberServiceTest {
         //when
         //then
         assertThatThrownBy(() -> memberService.editLoginPw("notLoginId", dto))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("연락처 수정")
+    void editTel() {
+        //given
+        String newTel = "010-1234-5678";
+
+        //when
+        Long memberId = memberService.editTel(savedMember.getLoginId(), newTel);
+
+        //then
+        Optional<Member> findMember = memberRepository.findById(memberId);
+        assertThat(findMember.get().getTel()).isEqualTo(newTel);
+    }
+
+    @Test
+    @DisplayName("연락처 수정#미가입회원")
+    void editTelByMember() {
+        //given
+        String newTel = "010-1234-5678";
+
+        //when
+        //then
+        assertThatThrownBy(() -> memberService.editTel("notLoginId", newTel))
                 .isInstanceOf(NoSuchElementException.class);
     }
 }
