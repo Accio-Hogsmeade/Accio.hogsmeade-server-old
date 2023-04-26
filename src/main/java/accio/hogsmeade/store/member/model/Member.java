@@ -70,6 +70,10 @@ public class Member extends TimeBaseEntity implements UserDetails {
         this.loginPw = newLoginPW;
     }
 
+    public void changeTel(String newTel) {
+        this.tel = newTel;
+    }
+
     //== 스프링 시큐리티 ==//
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
