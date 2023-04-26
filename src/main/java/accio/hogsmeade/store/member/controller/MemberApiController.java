@@ -1,15 +1,57 @@
 package accio.hogsmeade.store.member.controller;
 
+import accio.hogsmeade.store.jwt.SecurityUtil;
+import accio.hogsmeade.store.member.controller.dto.EditAddressRequest;
+import accio.hogsmeade.store.member.controller.dto.EditLoginPwRequest;
+import accio.hogsmeade.store.member.controller.dto.EditTelRequest;
 import accio.hogsmeade.store.member.model.service.MemberService;
+import accio.hogsmeade.store.member.model.service.dto.EditAddressDto;
+import accio.hogsmeade.store.member.model.service.dto.EditLoginPwDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/member")
 public class MemberApiController {
 
     public final MemberService memberService;
 
+    @PostMapping("/edit/loginPw")
+    public void editLoginPw(@Valid @RequestBody EditLoginPwRequest request) {
+        String loginId = SecurityUtil.getCurrentLoginId();
+        EditLoginPwDto dto = EditLoginPwDto.builder()
+                .newLoginPw(request.getNewLoginPw())
+                .oldLoginPw(request.getOldLoginPw())
+                .build();
+
+        Long memberId = memberService.editLoginPw(loginId, dto);
+        log.debug("edit loginPw = {}", memberId);
+    }
+
+    @PostMapping("/edit/tel")
+    public void editTel(@Valid @RequestBody EditTelRequest request) {
+        String loginId = SecurityUtil.getCurrentLoginId();
+        Long memberId = memberService.editTel(loginId, request.getTel());
+        log.debug("edit tel = {}", memberId);
+    }
+
+    @PostMapping("/edit/address")
+    public void editAddress(@Valid @RequestBody EditAddressRequest request) {
+        String loginId = SecurityUtil.getCurrentLoginId();
+        EditAddressDto dto = EditAddressDto.builder()
+                .mainAddress(request.getMainAddress())
+                .detailAddress(request.getDetailAddress())
+                .build();
+
+        Long memberId = memberService.editAddress(loginId, dto);
+        log.debug("edit address = {}", memberId);
+    }
 }
