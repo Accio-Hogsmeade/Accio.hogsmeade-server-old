@@ -74,6 +74,13 @@ public class Member extends TimeBaseEntity implements UserDetails {
         this.tel = newTel;
     }
 
+    public void changeAddress(String mainAddress, String detailAddress) {
+        this.address = Address.builder()
+                .mainAddress(mainAddress)
+                .detailAddress(detailAddress)
+                .build();
+    }
+
     //== 스프링 시큐리티 ==//
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
