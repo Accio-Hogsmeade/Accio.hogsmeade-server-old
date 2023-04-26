@@ -91,10 +91,10 @@ class NoticeServiceTest {
         //given
         Address address = Address.builder().mainAddress("mainAddress").detailAddress("detailAddress").build();
         Member member = Member.builder()
-                .loginId("harry")
+                .loginId("exception")
                 .loginPw("abcd1234!")
                 .name("harrypotter")
-                .tel("077-1234-1234")
+                .tel("077-1234-9876")
                 .address(address)
                 .identity(WIZARD)
                 .grade(QUAFFLE)
@@ -118,10 +118,10 @@ class NoticeServiceTest {
         //given
         Address address = Address.builder().mainAddress("mainAddress").detailAddress("detailAddress").build();
         Member member = Member.builder()
-                .loginId("harry")
+                .loginId("exception")
                 .loginPw("abcd1234!")
                 .name("harrypotter")
-                .tel("077-1234-1234")
+                .tel("077-1234-9876")
                 .address(address)
                 .identity(WIZARD)
                 .grade(QUAFFLE)
