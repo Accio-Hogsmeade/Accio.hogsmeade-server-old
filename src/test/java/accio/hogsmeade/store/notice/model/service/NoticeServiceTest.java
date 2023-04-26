@@ -7,7 +7,6 @@ import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.notice.model.Notice;
 import accio.hogsmeade.store.notice.model.repository.NoticeRepository;
 import accio.hogsmeade.store.notice.model.service.dto.AddNoticeDto;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static accio.hogsmeade.store.member.model.Grade.QUAFFLE;
@@ -67,6 +67,22 @@ class NoticeServiceTest {
         //then
         Optional<Notice> findNotice = noticeRepository.findById(noticeId);
         assertThat(findNotice).isPresent();
+    }
+
+    @Test
+    @DisplayName("공지사항 저장")
+    void registerNoticeByMember() {
+        //given
+        AddNoticeDto dto = AddNoticeDto.builder()
+                .title("공지사항 제목")
+                .content("공지사항 내용")
+                .pin("0")
+                .build();
+
+        //when
+        //then
+        assertThatThrownBy(() -> noticeService.registerNotice("noLoginId", dto))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
