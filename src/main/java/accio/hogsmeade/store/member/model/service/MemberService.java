@@ -13,4 +13,6 @@ public interface MemberService {
     TokenInfo login(String loginId, String loginPw);
 
     Long editLoginPw(String loginId, EditLoginPwDto dto);
+
+    Long editTel(String loginId, String newTel);
 }

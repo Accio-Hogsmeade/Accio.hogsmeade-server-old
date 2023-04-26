@@ -4,7 +4,6 @@ import accio.hogsmeade.store.common.exception.DuplicateException;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.jwt.JwtTokenProvider;
 import accio.hogsmeade.store.jwt.TokenInfo;
-import accio.hogsmeade.store.member.model.Grade;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
@@ -84,6 +83,18 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = findMember.get();
         member.changeLoginPw(dto.getOldLoginPw(), dto.getNewLoginPw());
+        return member.getId();
+    }
+
+    @Override
+    public Long editTel(String loginId, String newTel) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+        if (findMember.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        Member member = findMember.get();
+        member.changeTel(newTel);
         return member.getId();
     }
 }
