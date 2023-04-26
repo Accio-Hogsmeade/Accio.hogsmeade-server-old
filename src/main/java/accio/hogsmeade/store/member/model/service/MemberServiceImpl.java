@@ -4,10 +4,11 @@ import accio.hogsmeade.store.common.exception.DuplicateException;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.jwt.JwtTokenProvider;
 import accio.hogsmeade.store.jwt.TokenInfo;
-import accio.hogsmeade.store.member.model.Grade;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
+import accio.hogsmeade.store.member.model.service.dto.EditAddressDto;
+import accio.hogsmeade.store.member.model.service.dto.EditLoginPwDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static accio.hogsmeade.store.member.model.Grade.*;
@@ -71,5 +73,41 @@ public class MemberServiceImpl implements MemberService {
 
         //인증 정보를 기반으로 JWT 토큰 생성
         return jwtTokenProvider.generateToken(authentication);
+    }
+
+    @Override
+    public Long editLoginPw(String loginId, EditLoginPwDto dto) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+        if (findMember.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        Member member = findMember.get();
+        member.changeLoginPw(dto.getOldLoginPw(), dto.getNewLoginPw());
+        return member.getId();
+    }
+
+    @Override
+    public Long editTel(String loginId, String newTel) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+        if (findMember.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        Member member = findMember.get();
+        member.changeTel(newTel);
+        return member.getId();
+    }
+
+    @Override
+    public Long editAddress(String loginId, EditAddressDto dto) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+        if (findMember.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        Member member = findMember.get();
+        member.changeAddress(dto.getMainAddress(), dto.getDetailAddress());
+        return member.getId();
     }
 }

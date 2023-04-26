@@ -1,10 +1,10 @@
 package accio.hogsmeade.store.member.model;
 
+import accio.hogsmeade.store.common.exception.EditException;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.common.model.TimeBaseEntity;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +20,6 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
-//@NoArgsConstructor
 public class Member extends TimeBaseEntity implements UserDetails {
 
     @Id @GeneratedValue
@@ -42,13 +41,13 @@ public class Member extends TimeBaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Grade grade;
-
     @ElementCollection(fetch = EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = false, updatable = false, length = 20)
 
+    public Member() {
+
+    }
 
     @Builder
     public Member(Long id, String loginId, String loginPw, String name, String tel, Address address, Identity identity, Grade grade, List<String> roles) {
@@ -63,8 +62,23 @@ public class Member extends TimeBaseEntity implements UserDetails {
         this.roles = roles;
     }
 
-    public Member() {
+    //== 비즈니스 로직 ==//
+    public void changeLoginPw(String oldLoginPW, String newLoginPW) {
+        if (!this.loginPw.equals(oldLoginPW)) {
+            throw new EditException();
+        }
+        this.loginPw = newLoginPW;
+    }
 
+    public void changeTel(String newTel) {
+        this.tel = newTel;
+    }
+
+    public void changeAddress(String mainAddress, String detailAddress) {
+        this.address = Address.builder()
+                .mainAddress(mainAddress)
+                .detailAddress(detailAddress)
+                .build();
     }
 
     //== 스프링 시큐리티 ==//

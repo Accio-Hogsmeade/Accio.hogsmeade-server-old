@@ -1,16 +1,17 @@
 package accio.hogsmeade.store.member.controller;
 
-import accio.hogsmeade.store.jwt.TokenInfo;
-import accio.hogsmeade.store.member.controller.dto.JoinMemberRequest;
-import accio.hogsmeade.store.member.controller.dto.LoginRequest;
-import accio.hogsmeade.store.member.model.Authority;
-import accio.hogsmeade.store.member.model.Identity;
+import accio.hogsmeade.store.jwt.SecurityUtil;
+import accio.hogsmeade.store.member.controller.dto.EditAddressRequest;
+import accio.hogsmeade.store.member.controller.dto.EditLoginPwRequest;
+import accio.hogsmeade.store.member.controller.dto.EditTelRequest;
 import accio.hogsmeade.store.member.model.service.MemberService;
-import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
+import accio.hogsmeade.store.member.model.service.dto.EditAddressDto;
+import accio.hogsmeade.store.member.model.service.dto.EditLoginPwDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -18,34 +19,39 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/member")
 public class MemberApiController {
 
     public final MemberService memberService;
 
-    @PostMapping("/join")
-    public int join(@Valid @RequestBody JoinMemberRequest request) {
-        if (request.getIdentity() == Identity.MUGGLE && request.getAuthority() != Authority.MEMBER) {
-            return -1;
-        }
-
-        AddMemberDto addMemberDto = AddMemberDto.builder()
-                .loginId(request.getLoginId())
-                .loginPw(request.getLoginPw())
-                .username(request.getUsername())
-                .tel(request.getTel())
-                .mainAddress(request.getMainAddress())
-                .detailAddress(request.getDetailAddress())
-                .identity(request.getIdentity())
-                .authority(request.getAuthority())
+    @PostMapping("/edit/loginPw")
+    public void editLoginPw(@Valid @RequestBody EditLoginPwRequest request) {
+        String loginId = SecurityUtil.getCurrentLoginId();
+        EditLoginPwDto dto = EditLoginPwDto.builder()
+                .newLoginPw(request.getNewLoginPw())
+                .oldLoginPw(request.getOldLoginPw())
                 .build();
 
-        Long memberId = memberService.joinMember(addMemberDto);
-        log.debug("memberId = {}", memberId);
-        return 1;
+        Long memberId = memberService.editLoginPw(loginId, dto);
+        log.debug("edit loginPw = {}", memberId);
     }
 
-    @PostMapping("/login")
-    public TokenInfo login(@RequestBody LoginRequest request) {
-        return memberService.login(request.getLoginId(), request.getLoginPw());
+    @PostMapping("/edit/tel")
+    public void editTel(@Valid @RequestBody EditTelRequest request) {
+        String loginId = SecurityUtil.getCurrentLoginId();
+        Long memberId = memberService.editTel(loginId, request.getTel());
+        log.debug("edit tel = {}", memberId);
+    }
+
+    @PostMapping("/edit/address")
+    public void editAddress(@Valid @RequestBody EditAddressRequest request) {
+        String loginId = SecurityUtil.getCurrentLoginId();
+        EditAddressDto dto = EditAddressDto.builder()
+                .mainAddress(request.getMainAddress())
+                .detailAddress(request.getDetailAddress())
+                .build();
+
+        Long memberId = memberService.editAddress(loginId, dto);
+        log.debug("edit address = {}", memberId);
     }
 }
