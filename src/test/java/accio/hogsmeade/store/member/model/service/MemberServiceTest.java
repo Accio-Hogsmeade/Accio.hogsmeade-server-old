@@ -3,6 +3,7 @@ package accio.hogsmeade.store.member.model.service;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
+import accio.hogsmeade.store.member.model.service.dto.EditAddressDto;
 import accio.hogsmeade.store.member.model.service.dto.EditLoginPwDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -99,6 +100,37 @@ class MemberServiceTest {
         //when
         //then
         assertThatThrownBy(() -> memberService.editTel("notLoginId", newTel))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("주소 수정")
+    void editAddress() {
+        //given
+        EditAddressDto dto = EditAddressDto.builder()
+                .mainAddress("newMainAddress")
+                .detailAddress("newDetailAddress")
+                .build();
+        //when
+        Long memberId = memberService.editAddress(savedMember.getLoginId(), dto);
+
+        //then
+        Optional<Member> findMember = memberRepository.findById(memberId);
+        assertThat(findMember.get().getAddress().getMainAddress()).isEqualTo(dto.getMainAddress());
+    }
+
+    @Test
+    @DisplayName("주소 수정#미가입회원")
+    void editAddressByMember() {
+        //given
+        EditAddressDto dto = EditAddressDto.builder()
+                .mainAddress("newMainAddress")
+                .detailAddress("newDetailAddress")
+                .build();
+
+        //when
+        //then
+        assertThatThrownBy(() -> memberService.editAddress("notLoginId", dto))
                 .isInstanceOf(NoSuchElementException.class);
     }
 }
