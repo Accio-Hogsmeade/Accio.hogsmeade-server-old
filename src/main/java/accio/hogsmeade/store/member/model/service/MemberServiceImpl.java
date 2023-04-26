@@ -7,6 +7,7 @@ import accio.hogsmeade.store.jwt.TokenInfo;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
+import accio.hogsmeade.store.member.model.service.dto.EditAddressDto;
 import accio.hogsmeade.store.member.model.service.dto.EditLoginPwDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -95,6 +96,18 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = findMember.get();
         member.changeTel(newTel);
+        return member.getId();
+    }
+
+    @Override
+    public Long editAddress(String loginId, EditAddressDto dto) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+        if (findMember.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        Member member = findMember.get();
+        member.changeAddress(dto.getMainAddress(), dto.getDetailAddress());
         return member.getId();
     }
 }
