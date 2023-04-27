@@ -23,37 +23,16 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public Long registerNotice(String loginId, AddNoticeDto dto) {
-        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
-        if (findMember.isEmpty()) {
-            throw new NoSuchElementException();
-        }
+        Member member = validateMember(loginId);
 
-        Member member = findMember.get();
-        if (!member.getRoles().get(0).equals("ADMIN")) {
-            throw new AuthorityException();
-        }
-
-        Notice notice = Notice.builder()
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .pin(dto.getPin())
-                .member(member)
-                .build();
+        Notice notice = createNoticeDomain(dto, member);
         Notice savedNotice = noticeRepository.save(notice);
         return savedNotice.getId();
     }
 
     @Override
     public Long editNotice(String loginId, Long noticeId, EditNoticeDto dto) {
-        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
-        if (findMember.isEmpty()) {
-            throw new NoSuchElementException();
-        }
-
-        Member member = findMember.get();
-        if (!member.getRoles().get(0).equals("ADMIN")) {
-            throw new AuthorityException();
-        }
+        validateMember(loginId);
 
         Optional<Notice> findNotice = noticeRepository.findById(noticeId);
         if (findNotice.isEmpty()) {
@@ -63,5 +42,31 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = findNotice.get();
         notice.changeNotice(dto.getTitle(), dto.getContent(), dto.getPin());
         return notice.getId();
+    }
+
+    private Member validateMember(String loginId) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+        if (findMember.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        Member member = findMember.get();
+        if (isNotAdmin(member)) {
+            throw new AuthorityException();
+        }
+        return member;
+    }
+
+    private boolean isNotAdmin(Member member) {
+        return !member.getRoles().get(0).equals("ADMIN");
+    }
+
+    private Notice createNoticeDomain(AddNoticeDto dto, Member member) {
+        return Notice.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .pin(dto.getPin())
+                .member(member)
+                .build();
     }
 }
