@@ -1,10 +1,11 @@
-package accio.hogsmeade.store.notice.model.service;
+package accio.hogsmeade.store.notice.model.service.impl;
 
 import accio.hogsmeade.store.common.exception.AuthorityException;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.notice.model.Notice;
 import accio.hogsmeade.store.notice.model.repository.NoticeRepository;
+import accio.hogsmeade.store.notice.model.service.NoticeService;
 import accio.hogsmeade.store.notice.model.service.dto.AddNoticeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
