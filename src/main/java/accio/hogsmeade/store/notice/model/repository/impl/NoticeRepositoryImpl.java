@@ -1,7 +1,8 @@
-package accio.hogsmeade.store.notice.model.repository;
+package accio.hogsmeade.store.notice.model.repository.impl;
 
 import accio.hogsmeade.store.notice.controller.dto.DetailNoticeResponse;
 import accio.hogsmeade.store.notice.controller.dto.NoticeResponse;
+import accio.hogsmeade.store.notice.model.repository.NoticeRepositoryCustom;
 import accio.hogsmeade.store.notice.model.repository.dto.NoticeSearchCondition;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
