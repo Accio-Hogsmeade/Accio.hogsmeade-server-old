@@ -1,0 +1,19 @@
+package accio.hogsmeade.store.notice.model.service.dto;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+public class EditNoticeDto {
+
+    private String title;
+    private String content;
+    private String pin;
+
+    @Builder
+    public EditNoticeDto(String title, String content, String pin) {
+        this.title = title;
+        this.content = content;
+        this.pin = pin;
+    }
+}
