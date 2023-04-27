@@ -1,7 +1,9 @@
 package accio.hogsmeade.store.notice.model.repository;
 
+import accio.hogsmeade.store.notice.controller.dto.NoticeResponse;
 import accio.hogsmeade.store.notice.model.Notice;
 import accio.hogsmeade.store.notice.model.repository.dto.NoticeSearchCondition;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -24,8 +26,9 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
     }
 
     @Override
-    public Page<Notice> findByCondition(NoticeSearchCondition condition, Pageable pageable) {
-        List<Notice> notices = queryFactory.select(notice)
+    public Page<NoticeResponse> findByCondition(NoticeSearchCondition condition, Pageable pageable) {
+        List<NoticeResponse> notices = queryFactory
+                .select(Projections.fields(NoticeResponse.class, notice.id, notice.title, notice.createdDate))
                 .from(notice)
                 .where(
                         notice.pin.eq("0"),
@@ -37,7 +40,8 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                 .fetch();
 
         long totalCount = queryFactory
-                .selectFrom(notice)
+                .select(notice.id)
+                .from(notice)
                 .where()
                 .fetch()
                 .size();
@@ -45,9 +49,9 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
     }
 
     @Override
-    public List<Notice> findByPin() {
+    public List<NoticeResponse> findByPin() {
         return queryFactory
-                .select(notice)
+                .select(Projections.fields(NoticeResponse.class, notice.id, notice.title, notice.createdDate))
                 .from(notice)
                 .where(notice.pin.eq("1"))
                 .orderBy(notice.createdDate.desc())
