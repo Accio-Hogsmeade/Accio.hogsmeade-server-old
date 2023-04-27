@@ -28,7 +28,10 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
     public Page<Notice> findByCondition(NoticeSearchCondition condition, Pageable pageable) {
         List<Notice> notices = queryFactory.select(notice)
                 .from(notice)
-                .where(isKeyword(condition.getKeyword()))
+                .where(
+                        notice.pin.eq("0"),
+                        isKeyword(condition.getKeyword())
+                )
                 .orderBy(notice.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
