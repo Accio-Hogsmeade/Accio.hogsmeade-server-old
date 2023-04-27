@@ -40,4 +40,11 @@ public class Notice extends TimeBaseEntity {
         this.pin = pin;
         this.member = member;
     }
+
+    //== 비즈니스 로직 ==//
+    public void changeNotice(String title, String content, String pin) {
+        this.title = title;
+        this.content = content;
+        this.pin = pin;
+    }
 }
