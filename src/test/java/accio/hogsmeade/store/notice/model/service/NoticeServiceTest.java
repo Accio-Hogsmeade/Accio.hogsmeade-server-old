@@ -7,6 +7,7 @@ import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.notice.model.Notice;
 import accio.hogsmeade.store.notice.model.repository.NoticeRepository;
 import accio.hogsmeade.store.notice.model.service.dto.AddNoticeDto;
+import accio.hogsmeade.store.notice.model.service.dto.EditNoticeDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,9 +35,126 @@ class NoticeServiceTest {
     private MemberRepository memberRepository;
 
     private Member savedMember;
+    private Notice savedNotice;
 
     @BeforeEach
     void beforeEach() {
+        createMember();
+        createNotice();
+    }
+
+    @Test
+    @DisplayName("공지사항 저장")
+    void registerNotice() {
+        //given
+        AddNoticeDto dto = getAddNoticeDto();
+
+        //when
+        Long noticeId = noticeService.registerNotice(savedMember.getLoginId(), dto);
+
+        //then
+        Optional<Notice> findNotice = noticeRepository.findById(noticeId);
+        assertThat(findNotice).isPresent();
+    }
+
+    @Test
+    @DisplayName("공지사항 저장#미가입 회원")
+    void registerNoticeByMember() {
+        //given
+        AddNoticeDto dto = getAddNoticeDto();
+
+        //when
+        //then
+        assertThatThrownBy(() -> noticeService.registerNotice("noLoginId", dto))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("공지사항 저장#권한#MEMBER")
+    void authorityByMember() {
+        //given
+        Member savedMember = getMemberAuthority("MEMBER");
+        AddNoticeDto dto = getAddNoticeDto();
+        //when
+        //then
+        assertThatThrownBy(() -> noticeService.registerNotice(savedMember.getLoginId(), dto))
+                .isInstanceOf(AuthorityException.class);
+    }
+
+    @Test
+    @DisplayName("공지사항 저장#권한#STORE")
+    void authorityByStore() {
+        //given
+        Member savedMember = getMemberAuthority("STORE");
+        AddNoticeDto dto = getAddNoticeDto();
+        //when
+        //then
+        assertThatThrownBy(() -> noticeService.registerNotice(savedMember.getLoginId(), dto))
+                .isInstanceOf(AuthorityException.class);
+    }
+
+    @Test
+    @DisplayName("공지사항 수정")
+    void editNotice() {
+        //given
+        EditNoticeDto dto = getEditNoticeDto();
+
+        //when
+        Long noticeId = noticeService.editNotice(savedMember.getLoginId(), savedNotice.getId(), dto);
+
+        //then
+        Notice findNotice = noticeRepository.findById(noticeId).get();
+        assertThat(findNotice.getTitle()).isEqualTo(dto.getTitle());
+    }
+
+    @Test
+    @DisplayName("공지사항 수정#미가입 회원")
+    void editNoticeByMember() {
+        //given
+        EditNoticeDto dto = getEditNoticeDto();
+
+        //when
+        //then
+        assertThatThrownBy(() -> noticeService.editNotice("noLoginId", savedNotice.getId(), dto))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("공지사항 수정#권한#MEMBER")
+    void editNoticeAuthorityByMember() {
+        //given
+        Member savedMember = getMemberAuthority("MEMBER");
+        EditNoticeDto dto = getEditNoticeDto();
+        //when
+        //then
+        assertThatThrownBy(() -> noticeService.editNotice(savedMember.getLoginId(), savedNotice.getId(), dto))
+                .isInstanceOf(AuthorityException.class);
+    }
+
+    @Test
+    @DisplayName("공지사항 수정#권한#STORE")
+    void editNoticeAuthorityByStore() {
+        //given
+        Member savedMember = getMemberAuthority("STORE");
+        EditNoticeDto dto = getEditNoticeDto();
+        //when
+        //then
+        assertThatThrownBy(() -> noticeService.editNotice(savedMember.getLoginId(), savedNotice.getId(), dto))
+                .isInstanceOf(AuthorityException.class);
+    }
+
+    @Test
+    @DisplayName("공지사항 수정#미등록 공지")
+    void editNoticeNotRegister() {
+        //given
+        EditNoticeDto dto = getEditNoticeDto();
+        //when
+        //then
+        assertThatThrownBy(() -> noticeService.editNotice(savedMember.getLoginId(), 0L, dto))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    private void createMember() {
         Address address = Address.builder().mainAddress("mainAddress").detailAddress("detailAddress").build();
         Member member = Member.builder()
                 .loginId("harry")
@@ -51,44 +169,25 @@ class NoticeServiceTest {
         savedMember = memberRepository.save(member);
     }
 
-    @Test
-    @DisplayName("공지사항 저장")
-    void registerNotice() {
-        //given
-        AddNoticeDto dto = AddNoticeDto.builder()
+    private void createNotice() {
+        Notice notice = Notice.builder()
+                .title("beforeEach title")
+                .content("beforeEach content")
+                .pin("0")
+                .member(savedMember)
+                .build();
+        savedNotice = noticeRepository.save(notice);
+    }
+
+    private static AddNoticeDto getAddNoticeDto() {
+        return AddNoticeDto.builder()
                 .title("공지사항 제목")
                 .content("공지사항 내용")
                 .pin("0")
                 .build();
-
-        //when
-        Long noticeId = noticeService.registerNotice(savedMember.getLoginId(), dto);
-
-        //then
-        Optional<Notice> findNotice = noticeRepository.findById(noticeId);
-        assertThat(findNotice).isPresent();
     }
 
-    @Test
-    @DisplayName("공지사항 저장")
-    void registerNoticeByMember() {
-        //given
-        AddNoticeDto dto = AddNoticeDto.builder()
-                .title("공지사항 제목")
-                .content("공지사항 내용")
-                .pin("0")
-                .build();
-
-        //when
-        //then
-        assertThatThrownBy(() -> noticeService.registerNotice("noLoginId", dto))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("공지사항 저장#권한 예외#MEMBER")
-    void authorityByMember() {
-        //given
+    private Member getMemberAuthority(String authority) {
         Address address = Address.builder().mainAddress("mainAddress").detailAddress("detailAddress").build();
         Member member = Member.builder()
                 .loginId("exception")
@@ -98,44 +197,16 @@ class NoticeServiceTest {
                 .address(address)
                 .identity(WIZARD)
                 .grade(QUAFFLE)
-                .roles(Collections.singletonList("MEMBER"))
+                .roles(Collections.singletonList(authority))
                 .build();
-        Member savedMember = memberRepository.save(member);
-        AddNoticeDto dto = AddNoticeDto.builder()
-                .title("공지사항 제목")
-                .content("공지사항 내용")
-                .pin("0")
-                .build();
-        //when
-        //then
-        assertThatThrownBy(() -> noticeService.registerNotice(savedMember.getLoginId(), dto))
-                .isInstanceOf(AuthorityException.class);
+        return memberRepository.save(member);
     }
 
-    @Test
-    @DisplayName("공지사항 저장#권한 예외#STORE")
-    void authorityByStore() {
-        //given
-        Address address = Address.builder().mainAddress("mainAddress").detailAddress("detailAddress").build();
-        Member member = Member.builder()
-                .loginId("exception")
-                .loginPw("abcd1234!")
-                .name("harrypotter")
-                .tel("077-1234-9876")
-                .address(address)
-                .identity(WIZARD)
-                .grade(QUAFFLE)
-                .roles(Collections.singletonList("STORE"))
+    private static EditNoticeDto getEditNoticeDto() {
+        return EditNoticeDto.builder()
+                .title("new notice title")
+                .content("new notice content")
+                .pin("1")
                 .build();
-        Member savedMember = memberRepository.save(member);
-        AddNoticeDto dto = AddNoticeDto.builder()
-                .title("공지사항 제목")
-                .content("공지사항 내용")
-                .pin("0")
-                .build();
-        //when
-        //then
-        assertThatThrownBy(() -> noticeService.registerNotice(savedMember.getLoginId(), dto))
-                .isInstanceOf(AuthorityException.class);
     }
 }
