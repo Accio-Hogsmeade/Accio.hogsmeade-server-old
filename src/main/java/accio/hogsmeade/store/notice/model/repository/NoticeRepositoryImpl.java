@@ -1,7 +1,7 @@
 package accio.hogsmeade.store.notice.model.repository;
 
+import accio.hogsmeade.store.notice.controller.dto.DetailNoticeResponse;
 import accio.hogsmeade.store.notice.controller.dto.NoticeResponse;
-import accio.hogsmeade.store.notice.model.Notice;
 import accio.hogsmeade.store.notice.model.repository.dto.NoticeSearchCondition;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 
 import java.util.List;
+import java.util.Optional;
 
 import static accio.hogsmeade.store.notice.model.QNotice.*;
 
@@ -23,6 +24,17 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
 
     public NoticeRepositoryImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
+    }
+
+    @Override
+    public Optional<DetailNoticeResponse> findDetailById(Long noticeId) {
+        DetailNoticeResponse content = queryFactory
+                .select(Projections.fields(DetailNoticeResponse.class,
+                        notice.id, notice.title, notice.content, notice.createdDate))
+                .from(notice)
+                .where(notice.id.eq(noticeId))
+                .fetchOne();
+        return Optional.ofNullable(content);
     }
 
     @Override
