@@ -1,7 +1,6 @@
 package accio.hogsmeade.store.notice.model.repository;
 
 import accio.hogsmeade.store.notice.model.Notice;
-import accio.hogsmeade.store.notice.model.QNotice;
 import accio.hogsmeade.store.notice.model.repository.dto.NoticeSearchCondition;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -43,6 +42,16 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                 .fetch()
                 .size();
         return new PageImpl<>(notices, pageable, totalCount);
+    }
+
+    @Override
+    public List<Notice> findByPin() {
+        return queryFactory
+                .select(notice)
+                .from(notice)
+                .where(notice.pin.eq("1"))
+                .orderBy(notice.createdDate.desc())
+                .fetch();
     }
 
     private BooleanExpression isKeyword(String keyword) {
