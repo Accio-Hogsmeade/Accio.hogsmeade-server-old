@@ -1,5 +1,7 @@
 package accio.hogsmeade.store.member.model.service;
 
+import accio.hogsmeade.store.common.exception.AuthorityException;
+import accio.hogsmeade.store.common.model.Active;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
@@ -16,6 +18,7 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static accio.hogsmeade.store.common.model.Active.*;
 import static accio.hogsmeade.store.member.model.Grade.*;
 import static accio.hogsmeade.store.member.model.Identity.*;
 import static org.assertj.core.api.Assertions.*;
@@ -132,5 +135,29 @@ class MemberServiceTest {
         //then
         assertThatThrownBy(() -> memberService.editAddress("notLoginId", dto))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+    
+    @Test
+    @DisplayName("회원 탈퇴")
+    void withdrawal() {
+        //given
+
+        //when
+        Long memberId = memberService.withdrawal(savedMember.getLoginId(), savedMember.getLoginPw());
+
+        //then
+        Member findMember = memberRepository.findById(memberId).get();
+        assertThat(findMember.getActive()).isEqualTo(DEACTIVE);
+    }
+    
+    @Test
+    @DisplayName("회원 탈퇴#비밀번호 불일치")
+    void withdrawalNotEqualLoginPw() {
+        //given
+            
+        //when
+        //then
+        assertThatThrownBy(() -> memberService.withdrawal(savedMember.getLoginId(), "notLoginPw"))
+                .isInstanceOf(AuthorityException.class);
     }
 }

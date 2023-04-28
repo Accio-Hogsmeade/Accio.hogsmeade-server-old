@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static accio.hogsmeade.store.common.model.Active.*;
 import static javax.persistence.FetchType.*;
 
 @Entity
@@ -62,7 +63,7 @@ public class Member extends TimeBaseEntity implements UserDetails {
         this.address = address;
         this.identity = identity;
         this.grade = grade;
-        this.active = Active.ACTIVE;
+        this.active = ACTIVE;
         this.roles = roles;
     }
 
@@ -83,6 +84,10 @@ public class Member extends TimeBaseEntity implements UserDetails {
                 .mainAddress(mainAddress)
                 .detailAddress(detailAddress)
                 .build();
+    }
+
+    public void deActive() {
+        this.active = DEACTIVE;
     }
 
     //== 스프링 시큐리티 ==//
