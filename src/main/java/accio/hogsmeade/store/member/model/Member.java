@@ -1,6 +1,7 @@
 package accio.hogsmeade.store.member.model;
 
 import accio.hogsmeade.store.common.exception.EditException;
+import accio.hogsmeade.store.common.model.Active;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.common.model.TimeBaseEntity;
 import lombok.Builder;
@@ -41,16 +42,18 @@ public class Member extends TimeBaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Grade grade;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Active active;
     @ElementCollection(fetch = EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
     public Member() {
-
     }
 
     @Builder
-    public Member(Long id, String loginId, String loginPw, String name, String tel, Address address, Identity identity, Grade grade, List<String> roles) {
+    public Member(Long id, String loginId, String loginPw, String name, String tel, Address address, Identity identity, Grade grade, Active active, List<String> roles) {
         this.id = id;
         this.loginId = loginId;
         this.loginPw = loginPw;
@@ -59,6 +62,7 @@ public class Member extends TimeBaseEntity implements UserDetails {
         this.address = address;
         this.identity = identity;
         this.grade = grade;
+        this.active = Active.ACTIVE;
         this.roles = roles;
     }
 
