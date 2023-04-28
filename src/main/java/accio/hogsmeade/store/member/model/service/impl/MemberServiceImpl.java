@@ -62,7 +62,7 @@ public class MemberServiceImpl implements MemberService {
         return Member.builder()
                 .loginId(dto.getLoginId())
                 .loginPw(dto.getLoginPw())
-                .name(dto.getUsername())
+                .name(dto.getName())
                 .tel(dto.getTel())
                 .address(address)
                 .identity(dto.getIdentity())
