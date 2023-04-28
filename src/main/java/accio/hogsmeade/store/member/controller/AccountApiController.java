@@ -5,6 +5,7 @@ import accio.hogsmeade.store.member.controller.dto.JoinMemberRequest;
 import accio.hogsmeade.store.member.controller.dto.LoginRequest;
 import accio.hogsmeade.store.member.model.Authority;
 import accio.hogsmeade.store.member.model.Identity;
+import accio.hogsmeade.store.member.model.service.AccountService;
 import accio.hogsmeade.store.member.model.service.MemberService;
 import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,8 @@ import javax.validation.Valid;
 @Slf4j
 public class AccountApiController {
 
-    public final MemberService memberService;
+    private final MemberService memberService;
+    private final AccountService accountService;
 
     @PostMapping("/join")
     public int join(@Valid @RequestBody JoinMemberRequest request) {
@@ -46,6 +48,6 @@ public class AccountApiController {
 
     @PostMapping("/login")
     public TokenInfo login(@RequestBody LoginRequest request) {
-        return memberService.login(request.getLoginId(), request.getLoginPw());
+        return accountService.login(request.getLoginId(), request.getLoginPw());
     }
 }
