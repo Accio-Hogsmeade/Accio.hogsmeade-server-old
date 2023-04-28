@@ -1,10 +1,10 @@
 package accio.hogsmeade.store.member.controller;
 
 import accio.hogsmeade.store.jwt.TokenInfo;
-import accio.hogsmeade.store.member.controller.dto.FindLoginIdRequest;
-import accio.hogsmeade.store.member.controller.dto.FindLoginPwRequest;
-import accio.hogsmeade.store.member.controller.dto.JoinMemberRequest;
-import accio.hogsmeade.store.member.controller.dto.LoginRequest;
+import accio.hogsmeade.store.member.controller.dto.request.FindLoginIdRequest;
+import accio.hogsmeade.store.member.controller.dto.request.FindLoginPwRequest;
+import accio.hogsmeade.store.member.controller.dto.request.JoinMemberRequest;
+import accio.hogsmeade.store.member.controller.dto.request.LoginRequest;
 import accio.hogsmeade.store.member.model.Authority;
 import accio.hogsmeade.store.member.model.Identity;
 import accio.hogsmeade.store.member.model.service.AccountService;

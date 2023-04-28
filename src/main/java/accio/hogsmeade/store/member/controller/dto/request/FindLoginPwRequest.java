@@ -1,4 +1,4 @@
-package accio.hogsmeade.store.member.controller.dto;
+package accio.hogsmeade.store.member.controller.dto.request;
 
 import lombok.Data;
 

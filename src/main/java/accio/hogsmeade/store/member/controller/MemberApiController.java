@@ -1,9 +1,9 @@
 package accio.hogsmeade.store.member.controller;
 
 import accio.hogsmeade.store.jwt.SecurityUtil;
-import accio.hogsmeade.store.member.controller.dto.EditAddressRequest;
-import accio.hogsmeade.store.member.controller.dto.EditLoginPwRequest;
-import accio.hogsmeade.store.member.controller.dto.EditTelRequest;
+import accio.hogsmeade.store.member.controller.dto.request.EditAddressRequest;
+import accio.hogsmeade.store.member.controller.dto.request.EditLoginPwRequest;
+import accio.hogsmeade.store.member.controller.dto.request.EditTelRequest;
 import accio.hogsmeade.store.member.model.service.MemberService;
 import accio.hogsmeade.store.member.model.service.dto.EditAddressDto;
 import accio.hogsmeade.store.member.model.service.dto.EditLoginPwDto;
