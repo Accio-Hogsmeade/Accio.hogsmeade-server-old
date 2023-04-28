@@ -7,4 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface AccountService {
 
     TokenInfo login(String loginId, String loginPw);
+
+    String findLoginId(String name, String tel);
+
+    int findLoginPw(String name, String tel, String loginId);
 }

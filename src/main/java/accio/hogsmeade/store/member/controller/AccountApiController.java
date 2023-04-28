@@ -1,8 +1,10 @@
 package accio.hogsmeade.store.member.controller;
 
 import accio.hogsmeade.store.jwt.TokenInfo;
-import accio.hogsmeade.store.member.controller.dto.JoinMemberRequest;
-import accio.hogsmeade.store.member.controller.dto.LoginRequest;
+import accio.hogsmeade.store.member.controller.dto.request.FindLoginIdRequest;
+import accio.hogsmeade.store.member.controller.dto.request.FindLoginPwRequest;
+import accio.hogsmeade.store.member.controller.dto.request.JoinMemberRequest;
+import accio.hogsmeade.store.member.controller.dto.request.LoginRequest;
 import accio.hogsmeade.store.member.model.Authority;
 import accio.hogsmeade.store.member.model.Identity;
 import accio.hogsmeade.store.member.model.service.AccountService;
@@ -33,7 +35,7 @@ public class AccountApiController {
         AddMemberDto addMemberDto = AddMemberDto.builder()
                 .loginId(request.getLoginId())
                 .loginPw(request.getLoginPw())
-                .username(request.getUsername())
+                .name(request.getName())
                 .tel(request.getTel())
                 .mainAddress(request.getMainAddress())
                 .detailAddress(request.getDetailAddress())
@@ -49,5 +51,17 @@ public class AccountApiController {
     @PostMapping("/login")
     public TokenInfo login(@RequestBody LoginRequest request) {
         return accountService.login(request.getLoginId(), request.getLoginPw());
+    }
+
+    @PostMapping("/forgot/loginId")
+    public String findLoginId(@Valid @RequestBody FindLoginIdRequest request) {
+        String loginId = accountService.findLoginId(request.getName(), request.getTel());
+        return loginId;
+    }
+
+    @PostMapping("/forgot/loginPw")
+    public int findLoginPw(@Valid @RequestBody FindLoginPwRequest request) {
+        int result = accountService.findLoginPw(request.getName(), request.getTel(), request.getLoginId());
+        return result;
     }
 }

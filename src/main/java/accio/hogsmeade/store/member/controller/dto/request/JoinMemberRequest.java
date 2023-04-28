@@ -1,4 +1,4 @@
-package accio.hogsmeade.store.member.controller.dto;
+package accio.hogsmeade.store.member.controller.dto.request;
 
 import accio.hogsmeade.store.member.model.Authority;
 import accio.hogsmeade.store.member.model.Identity;
@@ -22,7 +22,7 @@ public class JoinMemberRequest {
     @NotBlank
     @Size(max = 20)
     @Pattern(regexp = "^[a-zA-Z가-힣]*$")
-    private String username;
+    private String name;
     @NotBlank
     @Size(min = 13, max = 13)
     @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$")
