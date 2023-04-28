@@ -38,12 +38,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String findLoginId(String name, String tel) {
-        Optional<Member> findMember = memberRepository.findByTel(tel);
-        if (findMember.isEmpty()) {
-            throw new FindAccountException();
-        }
+        Member member = getMemberByTel(tel);
 
-        Member member = findMember.get();
         if (!member.getName().equals(name)) {
             throw new FindAccountException();
         }
@@ -53,20 +49,31 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public int findLoginPw(String name, String tel, String loginId) {
-        Optional<Member> findMember = memberRepository.findByTel(tel);
-        if (findMember.isEmpty()) {
+        Member member = getMemberByTel(tel);
+        if (isEqualName(member, name)) {
             throw new FindAccountException();
         }
 
-        Member member = findMember.get();
-        if (!member.getName().equals(name)) {
-            throw new FindAccountException();
-        }
-
-        if (!member.getLoginId().equals(loginId)) {
+        if (isEqualLoginId(member, loginId)) {
             throw new FindAccountException();
         }
 
         return 1;
+    }
+
+    private Member getMemberByTel(String tel) {
+        Optional<Member> findMember = memberRepository.findByTel(tel);
+        if (findMember.isEmpty()) {
+            throw new FindAccountException();
+        }
+        return findMember.get();
+    }
+
+    private boolean isEqualName(Member member, String name) {
+        return !member.getName().equals(name);
+    }
+
+    private boolean isEqualLoginId(Member member, String loginId) {
+        return !member.getLoginId().equals(loginId);
     }
 }
