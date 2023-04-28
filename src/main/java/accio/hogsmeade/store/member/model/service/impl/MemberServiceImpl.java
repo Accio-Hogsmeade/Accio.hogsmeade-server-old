@@ -1,4 +1,4 @@
-package accio.hogsmeade.store.member.model.service;
+package accio.hogsmeade.store.member.model.service.impl;
 
 import accio.hogsmeade.store.common.exception.DuplicateException;
 import accio.hogsmeade.store.common.model.Address;
@@ -6,6 +6,7 @@ import accio.hogsmeade.store.jwt.JwtTokenProvider;
 import accio.hogsmeade.store.jwt.TokenInfo;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
+import accio.hogsmeade.store.member.model.service.MemberService;
 import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
 import accio.hogsmeade.store.member.model.service.dto.EditAddressDto;
 import accio.hogsmeade.store.member.model.service.dto.EditLoginPwDto;
