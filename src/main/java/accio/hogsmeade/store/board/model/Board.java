@@ -1,5 +1,6 @@
 package accio.hogsmeade.store.board.model;
 
+import accio.hogsmeade.store.common.model.Active;
 import accio.hogsmeade.store.common.model.TimeBaseEntity;
 import accio.hogsmeade.store.common.model.UploadFile;
 import accio.hogsmeade.store.member.model.Member;
@@ -34,6 +35,8 @@ public class Board extends TimeBaseEntity {
     private UploadFile uploadFile;
     @Enumerated(STRING)
     private BoardStatus status;
+    @Enumerated(STRING)
+    private Active active;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -42,13 +45,14 @@ public class Board extends TimeBaseEntity {
     private Category category;
 
     @Builder
-    public Board(Long id, String title, String content, int hit, UploadFile uploadFile, BoardStatus status, Member member, Category category) {
+    public Board(Long id, String title, String content, int hit, UploadFile uploadFile, BoardStatus status, Active active, Member member, Category category) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.hit = hit;
         this.uploadFile = uploadFile;
         this.status = status;
+        this.active = active;
         this.member = member;
         this.category = category;
     }
