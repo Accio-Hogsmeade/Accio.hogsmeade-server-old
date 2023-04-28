@@ -4,7 +4,6 @@ import accio.hogsmeade.store.common.exception.FindAccountException;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import static accio.hogsmeade.store.member.model.Grade.QUAFFLE;
 import static accio.hogsmeade.store.member.model.Identity.STUDENT;
@@ -71,6 +69,63 @@ class AccountServiceTest {
         //when
         //then
         assertThatThrownBy(() -> accountService.findLoginId(name, tel))
+                .isInstanceOf(FindAccountException.class);
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기")
+    void findLoginPw() {
+        //given
+        String name = "harrypotter";
+        String tel = "077-1234-1234";
+        String loginId = "harry";
+
+        //when
+        int result = accountService.findLoginPw(name, tel, loginId);
+
+        //then
+        assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기#존재하지 않는 연락처")
+    void findLoginPwNotExistTel() {
+        //given
+        String name = "harrypotter";
+        String tel = "077-5678-5678";
+        String loginId = "harry";
+
+        //when
+        //then
+        assertThatThrownBy(() -> accountService.findLoginPw(name, tel, loginId))
+                .isInstanceOf(FindAccountException.class);
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기#회원명 불일치")
+    void findLoginPwNotEqualName() {
+        //given
+        String name = "lion";
+        String tel = "077-1234-1234";
+        String loginId = "harry";
+
+        //when
+        //then
+        assertThatThrownBy(() -> accountService.findLoginPw(name, tel, loginId))
+                .isInstanceOf(FindAccountException.class);
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기#아이디 불일치")
+    void findLoginPwNotEqualLoginId() {
+        //given
+        String name = "harrypotter";
+        String tel = "077-1234-1234";
+        String loginId = "noLoginId";
+
+        //when
+        //then
+        assertThatThrownBy(() -> accountService.findLoginPw(name, tel, loginId))
                 .isInstanceOf(FindAccountException.class);
     }
 
