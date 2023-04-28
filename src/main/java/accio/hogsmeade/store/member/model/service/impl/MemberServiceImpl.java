@@ -1,5 +1,6 @@
 package accio.hogsmeade.store.member.model.service.impl;
 
+import accio.hogsmeade.store.common.exception.AuthorityException;
 import accio.hogsmeade.store.common.exception.DuplicateException;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
@@ -54,6 +55,18 @@ public class MemberServiceImpl implements MemberService {
         return member.getId();
     }
 
+    @Override
+    public Long withdrawal(String loginId, String loginPw) {
+        Member member = getMember(loginId);
+
+        if (isNotEqualLoginPw(loginPw, member)) {
+            throw new AuthorityException();
+        }
+
+        member.deActive();
+        return member.getId();
+    }
+
     private Member createMember(AddMemberDto dto) {
         Address address = Address.builder()
                 .mainAddress(dto.getMainAddress())
@@ -91,5 +104,9 @@ public class MemberServiceImpl implements MemberService {
         if (tel.isPresent()) {
             throw new DuplicateException();
         }
+    }
+
+    private boolean isNotEqualLoginPw(String loginPw, Member member) {
+        return !member.getLoginPw().equals(loginPw);
     }
 }
