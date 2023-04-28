@@ -23,24 +23,43 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-
     @Override
     public Long joinMember(AddMemberDto dto) {
-        Optional<Member> loginId = memberRepository.findByLoginId(dto.getLoginId());
-        if (loginId.isPresent()) {
-            throw new DuplicateException();
-        }
+        duplicateLoginId(dto);
+        duplicateTel(dto);
 
-        Optional<Member> tel = memberRepository.findByTel(dto.getTel());
-        if (tel.isPresent()) {
-            throw new DuplicateException();
-        }
+        Member member = createMember(dto);
+        Member savedMember = memberRepository.save(member);
+        return savedMember.getId();
+    }
 
+    @Override
+    public Long editLoginPw(String loginId, EditLoginPwDto dto) {
+        Member member = getMember(loginId);
+        member.changeLoginPw(dto.getOldLoginPw(), dto.getNewLoginPw());
+        return member.getId();
+    }
+
+    @Override
+    public Long editTel(String loginId, String newTel) {
+        Member member = getMember(loginId);
+        member.changeTel(newTel);
+        return member.getId();
+    }
+
+    @Override
+    public Long editAddress(String loginId, EditAddressDto dto) {
+        Member member = getMember(loginId);
+        member.changeAddress(dto.getMainAddress(), dto.getDetailAddress());
+        return member.getId();
+    }
+
+    private Member createMember(AddMemberDto dto) {
         Address address = Address.builder()
                 .mainAddress(dto.getMainAddress())
                 .detailAddress(dto.getDetailAddress())
                 .build();
-        Member member = Member.builder()
+        return Member.builder()
                 .loginId(dto.getLoginId())
                 .loginPw(dto.getLoginPw())
                 .name(dto.getUsername())
@@ -50,45 +69,27 @@ public class MemberServiceImpl implements MemberService {
                 .grade(QUAFFLE)
                 .roles(Collections.singletonList(dto.getAuthority().toString()))
                 .build();
-
-        Member savedMember = memberRepository.save(member);
-
-        return savedMember.getId();
     }
 
-    @Override
-    public Long editLoginPw(String loginId, EditLoginPwDto dto) {
+    private Member getMember(String loginId) {
         Optional<Member> findMember = memberRepository.findByLoginId(loginId);
         if (findMember.isEmpty()) {
             throw new NoSuchElementException();
         }
-
-        Member member = findMember.get();
-        member.changeLoginPw(dto.getOldLoginPw(), dto.getNewLoginPw());
-        return member.getId();
+        return findMember.get();
     }
 
-    @Override
-    public Long editTel(String loginId, String newTel) {
-        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
-        if (findMember.isEmpty()) {
-            throw new NoSuchElementException();
+    private void duplicateLoginId(AddMemberDto dto) {
+        Optional<Member> loginId = memberRepository.findByLoginId(dto.getLoginId());
+        if (loginId.isPresent()) {
+            throw new DuplicateException();
         }
-
-        Member member = findMember.get();
-        member.changeTel(newTel);
-        return member.getId();
     }
 
-    @Override
-    public Long editAddress(String loginId, EditAddressDto dto) {
-        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
-        if (findMember.isEmpty()) {
-            throw new NoSuchElementException();
+    private void duplicateTel(AddMemberDto dto) {
+        Optional<Member> tel = memberRepository.findByTel(dto.getTel());
+        if (tel.isPresent()) {
+            throw new DuplicateException();
         }
-
-        Member member = findMember.get();
-        member.changeAddress(dto.getMainAddress(), dto.getDetailAddress());
-        return member.getId();
     }
 }
