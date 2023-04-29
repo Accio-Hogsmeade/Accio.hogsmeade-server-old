@@ -8,7 +8,6 @@ import accio.hogsmeade.store.board.model.service.dto.AddBoardDto;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,12 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static accio.hogsmeade.store.member.model.Grade.QUAFFLE;
 import static accio.hogsmeade.store.member.model.Identity.STUDENT;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -64,17 +63,47 @@ class BoardServiceTest {
     @DisplayName("게시판 글 작성")
     void writeBoard() {
         //given
-        AddBoardDto addBoardDto = AddBoardDto.builder()
-                .title("제목")
-                .content("내용")
-                .uploadFile(null)
-                .build();
+        AddBoardDto addBoardDto = getAddBoardDto();
+
         //when
         Long boardId = boardService.writeBoard(savedMember.getLoginId(), savedCategory.getId(), addBoardDto);
 
         ///then
         Optional<Board> findBoard = boardRepository.findById(boardId);
-//        assertThat(findBoard.get().getId()).isEqualTo(boardId);
         assertThat(findBoard).isPresent();
+    }
+
+    @Test
+    @DisplayName("게시판 글 작성 - 로그인 유저 없음 에러")
+    void writeBoardMemberEmpty() {
+        //given
+        AddBoardDto addBoardDto = getAddBoardDto();
+
+        //when
+
+        ///then
+        assertThatThrownBy(() -> boardService.writeBoard("testUserId", savedCategory.getId(), addBoardDto))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("게시판 글 작성 - 카테고리 에러")
+    void writeBoardCategoryError() {
+        //given
+        AddBoardDto addBoardDto = getAddBoardDto();
+
+        //when
+
+        ///then
+        assertThatThrownBy(() -> boardService.writeBoard(savedMember.getLoginId(), -1L, addBoardDto))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    private AddBoardDto getAddBoardDto() {
+        return AddBoardDto.builder()
+                .title("제목")
+                .content("내용")
+                .uploadFile(null)
+                .build();
     }
 }
