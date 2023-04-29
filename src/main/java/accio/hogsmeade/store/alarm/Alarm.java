@@ -20,7 +20,9 @@ public class Alarm extends TimeBaseEntity {
     @Id @GeneratedValue
     @Column(name = "alarm_id")
     private Long id;
+    @Column(nullable = false, updatable = false, length = 50)
     private String content;
+    @Column(nullable = false)
     private Boolean open;
 
     @Builder
