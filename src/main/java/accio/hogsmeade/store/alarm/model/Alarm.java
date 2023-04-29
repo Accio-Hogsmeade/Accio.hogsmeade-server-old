@@ -1,4 +1,4 @@
-package accio.hogsmeade.store.alarm;
+package accio.hogsmeade.store.alarm.model;
 
 import accio.hogsmeade.store.common.model.TimeBaseEntity;
 import accio.hogsmeade.store.member.model.Member;
@@ -28,9 +28,10 @@ public class Alarm extends TimeBaseEntity {
     private Member member;
 
     @Builder
-    public Alarm(Long id, String content, Boolean open) {
+    public Alarm(Long id, String content, Boolean open, Member member) {
         this.id = id;
         this.content = content;
         this.open = open;
+        this.member = member;
     }
 }
