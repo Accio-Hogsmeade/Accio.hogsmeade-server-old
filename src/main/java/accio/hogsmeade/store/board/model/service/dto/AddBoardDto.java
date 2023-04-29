@@ -1,6 +1,5 @@
 package accio.hogsmeade.store.board.model.service.dto;
 
-import accio.hogsmeade.store.common.model.UploadFile;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,12 +7,12 @@ import lombok.Data;
 public class AddBoardDto {
     private String title;
     private String content;
-    private UploadFile uploadFile;
+    private String uploadFileName;
 
     @Builder
-    public AddBoardDto(String title, String content, UploadFile uploadFile) {
+    public AddBoardDto(String title, String content, String uploadFileName) {
         this.title = title;
         this.content = content;
-        this.uploadFile = uploadFile;
+        this.uploadFileName = uploadFileName;
     }
 }
