@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class PreviewAlarmResponse {
+public class AlarmResponse {
 
     private Long alarmId;
     private String title;
