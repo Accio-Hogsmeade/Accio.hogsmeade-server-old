@@ -1,6 +1,7 @@
 package accio.hogsmeade.store.alarm.model.repository.impl;
 
 import accio.hogsmeade.store.alarm.controller.dto.AlarmResponse;
+import accio.hogsmeade.store.alarm.controller.dto.DetailAlarmResponse;
 import accio.hogsmeade.store.alarm.model.repository.AlarmRepositoryCustom;
 import accio.hogsmeade.store.alarm.model.repository.dto.AlarmSearchCondition;
 import com.querydsl.core.types.Projections;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static accio.hogsmeade.store.alarm.model.QAlarm.*;
 
@@ -63,6 +65,16 @@ public class AlarmRepositoryImpl implements AlarmRepositoryCustom {
                 .size();
 
         return new PageImpl<>(alarms, pageable, totalCount);
+    }
+
+    @Override
+    public Optional<DetailAlarmResponse> findByMemberId(Long memberId) {
+        DetailAlarmResponse response = queryFactory
+                .select(Projections.fields(DetailAlarmResponse.class, alarm.id, alarm.title, alarm.content, alarm.createdDate))
+                .from(alarm)
+                .where(alarm.member.id.eq(memberId))
+                .fetchOne();
+        return Optional.ofNullable(response);
     }
 
     private BooleanExpression isKeyword(String keyword) {
