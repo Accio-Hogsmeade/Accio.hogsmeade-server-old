@@ -43,7 +43,7 @@ public class AlarmServiceImpl implements AlarmService {
         Alarm findAlarm = alarmRepository.findById(alarmId)
                 .orElseThrow(NoSuchElementException::new);
 
-        if (findAlarm.getMember().getId().equals(findMember.getId())) {
+        if (!findAlarm.getMember().getId().equals(findMember.getId())) {
             throw new AuthorityException();
         }
 
