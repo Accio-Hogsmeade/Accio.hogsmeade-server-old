@@ -40,6 +40,7 @@ public class MemberApiController {
         log.debug("edit loginPw = {}", memberId);
     }
 
+    @ApiOperation(value = "회원 연락처 변경")
     @PostMapping("/edit/tel")
     public void editTel(@Valid @RequestBody EditTelRequest request) {
         String loginId = SecurityUtil.getCurrentLoginId();
