@@ -10,6 +10,7 @@ import accio.hogsmeade.store.member.model.Identity;
 import accio.hogsmeade.store.member.model.service.AccountService;
 import accio.hogsmeade.store.member.model.service.MemberService;
 import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,11 +22,13 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = {"회원"})
 public class AccountApiController {
 
     private final MemberService memberService;
     private final AccountService accountService;
 
+    @ApiOperation(value = "회원 가입")
     @PostMapping("/join")
     public int join(@Valid @RequestBody JoinMemberRequest request) {
         if (request.getIdentity() == Identity.MUGGLE && request.getAuthority() != Authority.MEMBER) {
