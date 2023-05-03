@@ -51,6 +51,7 @@ public class AccountApiController {
         return 1;
     }
 
+    @ApiOperation(value = "로그인")
     @PostMapping("/login")
     public TokenInfo login(@RequestBody LoginRequest request) {
         return accountService.login(request.getLoginId(), request.getLoginPw());
