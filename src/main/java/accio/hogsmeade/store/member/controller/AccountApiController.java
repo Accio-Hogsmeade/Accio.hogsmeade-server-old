@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Api(tags = {"회원"})
+@Api(tags = {"계정"})
 public class AccountApiController {
 
     private final MemberService memberService;
