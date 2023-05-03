@@ -1,5 +1,6 @@
 package accio.hogsmeade.store.member.controller.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -12,9 +13,11 @@ public class EditLoginPwRequest {
     @NotBlank
     @Size(min = 8, max = 20)
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")
+    @ApiModelProperty(example = "abcd1234!")
     private String oldLoginPw;
     @NotBlank
     @Size(min = 8, max = 20)
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")
+    @ApiModelProperty(example = "qwer5678@")
     private String newLoginPw;
 }
