@@ -5,6 +5,7 @@ import accio.hogsmeade.store.board.model.Category;
 import accio.hogsmeade.store.board.model.repository.BoardRepository;
 import accio.hogsmeade.store.board.model.repository.CategoryRepository;
 import accio.hogsmeade.store.board.model.service.dto.AddBoardDto;
+import accio.hogsmeade.store.board.model.service.dto.UpdateBoardDto;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
@@ -97,6 +98,28 @@ class BoardServiceTest {
         ///then
         assertThatThrownBy(() -> boardService.writeBoard(savedMember.getLoginId(), -1L, addBoardDto))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("게시판 글 수정")
+    void updateBoard() {
+        //given
+        AddBoardDto addBoardDto = getAddBoardDto();
+        Board savedBoard = boardRepository.save(Board.builder()
+                .title(addBoardDto.getTitle())
+                .content(addBoardDto.getContent())
+                .category(savedCategory)
+                .member(savedMember)
+                .build());
+        UpdateBoardDto updateBoardDto = UpdateBoardDto.builder()
+                .categoryId(savedCategory.getId())
+                .uploadFileName(null)
+                .title("123")
+                .content("456")
+                .build();
+
+        //when
+        boardService.updateBoard(savedMember.getLoginId(), savedBoard.getId(), updateBoardDto);
     }
 
     private AddBoardDto getAddBoardDto() {
