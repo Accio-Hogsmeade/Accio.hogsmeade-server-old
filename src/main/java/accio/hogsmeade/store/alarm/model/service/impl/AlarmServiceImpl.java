@@ -9,6 +9,7 @@ import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -49,5 +50,17 @@ public class AlarmServiceImpl implements AlarmService {
 
         findAlarm.alarmOpen();
         return findAlarm.getId();
+    }
+
+    @Override
+    public int removeAlarms(String loginId, List<Long> alarmIds) {
+        Member findMember = memberRepository.findByLoginId(loginId)
+                .orElseThrow(NoSuchElementException::new);
+
+        List<Alarm> findAlarms = alarmRepository.findAllByIds(alarmIds);
+        for (Alarm alarm : findAlarms) {
+            alarm.deActive();
+        }
+        return findAlarms.size();
     }
 }

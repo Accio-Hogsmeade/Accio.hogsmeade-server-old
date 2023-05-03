@@ -2,6 +2,7 @@ package accio.hogsmeade.store.alarm.model.repository.impl;
 
 import accio.hogsmeade.store.alarm.controller.dto.AlarmResponse;
 import accio.hogsmeade.store.alarm.controller.dto.DetailAlarmResponse;
+import accio.hogsmeade.store.alarm.model.Alarm;
 import accio.hogsmeade.store.alarm.model.repository.AlarmRepositoryCustom;
 import accio.hogsmeade.store.alarm.model.repository.dto.AlarmSearchCondition;
 import com.querydsl.core.types.Projections;
@@ -75,6 +76,15 @@ public class AlarmRepositoryImpl implements AlarmRepositoryCustom {
                 .where(alarm.member.id.eq(memberId))
                 .fetchOne();
         return Optional.ofNullable(response);
+    }
+
+    @Override
+    public List<Alarm> findAllByIds(List<Long> alarmIds) {
+        return queryFactory
+                .select(alarm)
+                .from(alarm)
+                .where(alarm.id.in(alarmIds))
+                .fetch();
     }
 
     private BooleanExpression isKeyword(String keyword) {

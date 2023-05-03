@@ -2,6 +2,7 @@ package accio.hogsmeade.store.alarm.model.service;
 
 import accio.hogsmeade.store.alarm.model.Alarm;
 import accio.hogsmeade.store.alarm.model.repository.AlarmRepository;
+import accio.hogsmeade.store.common.model.Active;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static accio.hogsmeade.store.common.model.Active.*;
 import static accio.hogsmeade.store.member.model.Grade.QUAFFLE;
 import static accio.hogsmeade.store.member.model.Identity.WIZARD;
 import static org.assertj.core.api.Assertions.*;
@@ -72,6 +74,7 @@ class AlarmServiceTest {
                 .title("페이 머니 충전")
                 .content("페이 머니가 충전되었습니다.")
                 .open(false)
+                .active(ACTIVE)
                 .member(savedMember)
                 .build();
         Alarm savedAlarm = alarmRepository.save(alarm);
@@ -92,6 +95,7 @@ class AlarmServiceTest {
                 .title("페이 머니 충전")
                 .content("페이 머니가 충전되었습니다.")
                 .open(false)
+                .active(ACTIVE)
                 .member(savedMember)
                 .build();
         Alarm savedAlarm = alarmRepository.save(alarm);
@@ -112,7 +116,28 @@ class AlarmServiceTest {
         assertThatThrownBy(() -> alarmService.openAlarm(savedMember.getLoginId(), 0L))
                 .isInstanceOf(NoSuchElementException.class);
     }
+    
+    @Test
+    @DisplayName("알림 삭제")
+    void removeAlarms() {
+        //given
+        Alarm alarm = Alarm.builder()
+                .title("페이 머니 충전")
+                .content("페이 머니가 충전되었습니다.")
+                .open(false)
+                .active(ACTIVE)
+                .member(savedMember)
+                .build();
+        Alarm savedAlarm = alarmRepository.save(alarm);
 
+        //when
+        int count = alarmService.removeAlarms(savedMember.getLoginId(), Collections.singletonList(savedAlarm.getId()));
+
+        //then
+        Alarm findAlarm = alarmRepository.findById(savedAlarm.getId()).get();
+        assertThat(findAlarm.getActive()).isEqualTo(DEACTIVE);
+    }
+    
     private void createMember() {
         Address address = Address.builder().mainAddress("mainAddress").detailAddress("detailAddress").build();
         Member member = Member.builder()
