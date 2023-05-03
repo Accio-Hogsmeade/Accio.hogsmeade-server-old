@@ -37,4 +37,9 @@ public class Alarm extends TimeBaseEntity {
         this.open = open;
         this.member = member;
     }
+
+    //== 비즈니스 로직 ==//
+    public void alarmOpen() {
+        this.open = true;
+    }
 }

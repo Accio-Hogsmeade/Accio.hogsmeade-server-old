@@ -64,6 +64,55 @@ class AlarmServiceTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
+    @Test
+    @DisplayName("알림 열람")
+    void openAlarm() {
+        //given
+        Alarm alarm = Alarm.builder()
+                .title("페이 머니 충전")
+                .content("페이 머니가 충전되었습니다.")
+                .open(false)
+                .member(savedMember)
+                .build();
+        Alarm savedAlarm = alarmRepository.save(alarm);
+
+        //when
+        Long alarmId = alarmService.openAlarm(savedMember.getLoginId(), savedAlarm.getId());
+
+        //then
+        Alarm findAlarm = alarmRepository.findById(alarmId).get();
+        assertThat(findAlarm.getOpen()).isTrue();
+    }
+
+    @Test
+    @DisplayName("알림 열람#미가입 회원")
+    void openAlarmByMember() {
+        //given
+        Alarm alarm = Alarm.builder()
+                .title("페이 머니 충전")
+                .content("페이 머니가 충전되었습니다.")
+                .open(false)
+                .member(savedMember)
+                .build();
+        Alarm savedAlarm = alarmRepository.save(alarm);
+
+        //when
+        //then
+        assertThatThrownBy(() -> alarmService.openAlarm("noLoginId", savedAlarm.getId()))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("알림 열람#미존재 알림")
+    void openAlarmByAlarm() {
+        //given
+
+        //when
+        //then
+        assertThatThrownBy(() -> alarmService.openAlarm(savedMember.getLoginId(), 0L))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
     private void createMember() {
         Address address = Address.builder().mainAddress("mainAddress").detailAddress("detailAddress").build();
         Member member = Member.builder()
