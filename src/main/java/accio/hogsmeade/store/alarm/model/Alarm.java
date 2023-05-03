@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static accio.hogsmeade.store.common.model.Active.DEACTIVE;
 import static lombok.AccessLevel.*;
 
 @Entity
@@ -46,5 +47,9 @@ public class Alarm extends TimeBaseEntity {
     //== 비즈니스 로직 ==//
     public void alarmOpen() {
         this.open = true;
+    }
+
+    public void deActive() {
+        this.active = DEACTIVE;
     }
 }
