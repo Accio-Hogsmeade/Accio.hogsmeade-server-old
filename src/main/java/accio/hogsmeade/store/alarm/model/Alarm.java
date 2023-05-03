@@ -18,6 +18,8 @@ public class Alarm extends TimeBaseEntity {
     @Id @GeneratedValue
     @Column(name = "alarm_id")
     private Long id;
+    @Column(nullable = false, updatable = false, length = 20)
+    private String title;
     @Column(nullable = false, updatable = false, length = 50)
     private String content;
     @Column(nullable = false)
@@ -28,8 +30,9 @@ public class Alarm extends TimeBaseEntity {
     private Member member;
 
     @Builder
-    public Alarm(Long id, String content, Boolean open, Member member) {
+    public Alarm(Long id, String title, String content, Boolean open, Member member) {
         this.id = id;
+        this.title = title;
         this.content = content;
         this.open = open;
         this.member = member;
