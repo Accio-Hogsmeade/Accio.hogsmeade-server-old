@@ -48,6 +48,7 @@ public class MemberApiController {
         log.debug("edit tel = {}", memberId);
     }
 
+    @ApiOperation(value = "회원 주소 변경")
     @PostMapping("/edit/address")
     public void editAddress(@Valid @RequestBody EditAddressRequest request) {
         String loginId = SecurityUtil.getCurrentLoginId();
