@@ -64,6 +64,7 @@ public class AccountApiController {
         return loginId;
     }
 
+    @ApiOperation(value = "로그인 비밀번호 찾기")
     @PostMapping("/forgot/loginPw")
     public int findLoginPw(@Valid @RequestBody FindLoginPwRequest request) {
         int result = accountService.findLoginPw(request.getName(), request.getTel(), request.getLoginId());
