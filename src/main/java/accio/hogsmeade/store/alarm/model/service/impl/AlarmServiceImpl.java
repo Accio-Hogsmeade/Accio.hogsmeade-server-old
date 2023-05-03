@@ -3,6 +3,7 @@ package accio.hogsmeade.store.alarm.model.service.impl;
 import accio.hogsmeade.store.alarm.model.Alarm;
 import accio.hogsmeade.store.alarm.model.repository.AlarmRepository;
 import accio.hogsmeade.store.alarm.model.service.AlarmService;
+import accio.hogsmeade.store.common.exception.AuthorityException;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,21 @@ public class AlarmServiceImpl implements AlarmService {
                 .build();
         Alarm savedAlarm = alarmRepository.save(alarm);
         return savedAlarm.getId();
+    }
+
+    @Override
+    public Long openAlarm(String loginId, Long alarmId) {
+        Member findMember = memberRepository.findByLoginId(loginId)
+                .orElseThrow(NoSuchElementException::new);
+
+        Alarm findAlarm = alarmRepository.findById(alarmId)
+                .orElseThrow(NoSuchElementException::new);
+
+        if (findAlarm.getMember().getId().equals(findMember.getId())) {
+            throw new AuthorityException();
+        }
+
+        findAlarm.alarmOpen();
+        return findAlarm.getId();
     }
 }
