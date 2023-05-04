@@ -45,4 +45,10 @@ public class Store extends TimeBaseEntity {
         this.active = active;
         this.member = member;
     }
+
+    //== 비즈니스 로직 ==//
+    public void changeStore(String content, UploadFile uploadFile) {
+        this.content = content;
+        this.uploadFile = uploadFile;
+    }
 }
