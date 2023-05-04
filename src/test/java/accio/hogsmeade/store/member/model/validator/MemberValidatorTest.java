@@ -3,7 +3,6 @@ package accio.hogsmeade.store.member.model.validator;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,10 +34,30 @@ class MemberValidatorTest {
     }
 
     @Test
+    @DisplayName("pk로 회원 조회")
+    void findById() {
+        //given
+        //when
+        Member findMember = memberValidator.findById(savedMember.getId());
+
+        //then
+        assertThat(findMember.getId()).isEqualTo(savedMember.getId());
+    }
+
+    @Test
+    @DisplayName("pk로 회원 조회#예외")
+    void findByIdException() {
+        //given
+        //when
+        //then
+        assertThatThrownBy(() -> memberValidator.findById(0L))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
     @DisplayName("loginId로 회원 조회")
     void findByLoginId() {
         //given
-
         //when
         Member findMember = memberValidator.findByLoginId(savedMember.getLoginId());
 
@@ -60,7 +79,6 @@ class MemberValidatorTest {
     @DisplayName("tel로 회원 조회")
     void findByTel() {
         //given
-
         //when
         Member findMember = memberValidator.findByTel(savedMember.getTel());
 
