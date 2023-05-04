@@ -9,11 +9,11 @@ import accio.hogsmeade.store.member.model.service.MemberService;
 import accio.hogsmeade.store.member.model.service.dto.AddMemberDto;
 import accio.hogsmeade.store.member.model.service.dto.EditAddressDto;
 import accio.hogsmeade.store.member.model.service.dto.EditLoginPwDto;
+import accio.hogsmeade.store.member.model.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static accio.hogsmeade.store.member.model.Grade.*;
@@ -23,6 +23,7 @@ import static accio.hogsmeade.store.member.model.Grade.*;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberValidator memberValidator;
 
     @Override
     public Long joinMember(AddMemberDto dto) {
@@ -36,28 +37,28 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Long editLoginPw(String loginId, EditLoginPwDto dto) {
-        Member member = getMember(loginId);
+        Member member = memberValidator.findByLoginId(loginId);
         member.changeLoginPw(dto.getOldLoginPw(), dto.getNewLoginPw());
         return member.getId();
     }
 
     @Override
     public Long editTel(String loginId, String newTel) {
-        Member member = getMember(loginId);
+        Member member = memberValidator.findByLoginId(loginId);
         member.changeTel(newTel);
         return member.getId();
     }
 
     @Override
     public Long editAddress(String loginId, EditAddressDto dto) {
-        Member member = getMember(loginId);
+        Member member = memberValidator.findByLoginId(loginId);
         member.changeAddress(dto.getMainAddress(), dto.getDetailAddress());
         return member.getId();
     }
 
     @Override
     public Long withdrawal(String loginId, String loginPw) {
-        Member member = getMember(loginId);
+        Member member = memberValidator.findByLoginId(loginId);
 
         if (isNotEqualLoginPw(loginPw, member)) {
             throw new AuthorityException();
@@ -82,14 +83,6 @@ public class MemberServiceImpl implements MemberService {
                 .grade(QUAFFLE)
                 .roles(Collections.singletonList(dto.getAuthority().toString()))
                 .build();
-    }
-
-    private Member getMember(String loginId) {
-        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
-        if (findMember.isEmpty()) {
-            throw new NoSuchElementException();
-        }
-        return findMember.get();
     }
 
     private void duplicateLoginId(AddMemberDto dto) {
