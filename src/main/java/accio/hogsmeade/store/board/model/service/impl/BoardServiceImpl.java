@@ -68,11 +68,11 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Category category = findCategory.get();
-        board.changeBoard(
-                editBoardDto.getTitle(),
-                editBoardDto.getContent(),
-                editBoardDto.getUploadFileName(),
-                category);
+//        board.changeBoard(
+//                editBoardDto.getTitle(),
+//                editBoardDto.getContent(),
+//                editBoardDto.getUploadFileName(),
+//                category);
         return board.getId();
     }
 }
