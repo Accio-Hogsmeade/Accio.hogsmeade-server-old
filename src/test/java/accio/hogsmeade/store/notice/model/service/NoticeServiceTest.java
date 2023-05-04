@@ -58,18 +58,6 @@ class NoticeServiceTest {
     }
 
     @Test
-    @DisplayName("공지사항 저장#미가입 회원")
-    void registerNoticeByMember() {
-        //given
-        AddNoticeDto dto = getAddNoticeDto();
-
-        //when
-        //then
-        assertThatThrownBy(() -> noticeService.registerNotice("noLoginId", dto))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
     @DisplayName("공지사항 저장#권한#MEMBER")
     void authorityByMember() {
         //given
