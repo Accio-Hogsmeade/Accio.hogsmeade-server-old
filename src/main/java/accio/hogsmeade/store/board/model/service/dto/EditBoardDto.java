@@ -9,10 +9,10 @@ public class EditBoardDto {
     private Long categoryId;
     private String title;
     private String content;
-    private UploadFile uploadFileName;
+    private String uploadFileName;
 
     @Builder
-    public EditBoardDto(Long categoryId, String title, String content, UploadFile uploadFileName) {
+    public EditBoardDto(Long categoryId, String title, String content, String uploadFileName) {
         this.categoryId = categoryId;
         this.title = title;
         this.content = content;

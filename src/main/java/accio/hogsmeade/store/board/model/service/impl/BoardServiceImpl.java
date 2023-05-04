@@ -6,7 +6,6 @@ import accio.hogsmeade.store.board.model.repository.BoardRepository;
 import accio.hogsmeade.store.board.model.repository.CategoryRepository;
 import accio.hogsmeade.store.board.model.service.BoardService;
 import accio.hogsmeade.store.board.model.service.dto.AddBoardDto;
-import accio.hogsmeade.store.board.model.service.dto.BoardDto;
 import accio.hogsmeade.store.board.model.service.dto.EditBoardDto;
 import accio.hogsmeade.store.common.exception.AuthorityException;
 import accio.hogsmeade.store.member.model.Member;
