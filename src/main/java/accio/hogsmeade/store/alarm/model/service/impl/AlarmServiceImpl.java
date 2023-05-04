@@ -5,32 +5,27 @@ import accio.hogsmeade.store.alarm.model.repository.AlarmRepository;
 import accio.hogsmeade.store.alarm.model.service.AlarmService;
 import accio.hogsmeade.store.common.exception.AuthorityException;
 import accio.hogsmeade.store.member.model.Member;
-import accio.hogsmeade.store.member.model.repository.MemberRepository;
+import accio.hogsmeade.store.member.model.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AlarmServiceImpl implements AlarmService {
 
     private final AlarmRepository alarmRepository;
-    private final MemberRepository memberRepository;
+    private final MemberValidator memberValidator;
 
     @Override
     public Long registerAlarm(Long memberId, String message) {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if (findMember.isEmpty()) {
-            throw new NoSuchElementException();
-        }
+        Member fineMember = memberValidator.findById(memberId);
 
-        Member member = findMember.get();
         Alarm alarm = Alarm.builder()
                 .content(message)
-                .member(member)
+                .member(fineMember)
                 .build();
         Alarm savedAlarm = alarmRepository.save(alarm);
         return savedAlarm.getId();
@@ -38,8 +33,7 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     public Long openAlarm(String loginId, Long alarmId) {
-        Member findMember = memberRepository.findByLoginId(loginId)
-                .orElseThrow(NoSuchElementException::new);
+        Member findMember = memberValidator.findByLoginId(loginId);
 
         Alarm findAlarm = alarmRepository.findById(alarmId)
                 .orElseThrow(NoSuchElementException::new);
@@ -54,8 +48,7 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     public int removeAlarms(String loginId, List<Long> alarmIds) {
-        Member findMember = memberRepository.findByLoginId(loginId)
-                .orElseThrow(NoSuchElementException::new);
+        Member findMember = memberValidator.findByLoginId(loginId);
 
         List<Alarm> findAlarms = alarmRepository.findAllByIds(alarmIds);
         for (Alarm alarm : findAlarms) {

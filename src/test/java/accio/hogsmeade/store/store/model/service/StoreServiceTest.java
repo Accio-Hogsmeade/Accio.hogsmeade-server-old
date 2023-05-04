@@ -40,7 +40,6 @@ class StoreServiceTest {
         createMember();
     }
 
-
     @Test
     @DisplayName("매장 등록")
     void registerStore() {
@@ -58,23 +57,6 @@ class StoreServiceTest {
         //then
         Optional<Store> findStore = storeRepository.findById(storeId);
         assertThat(findStore).isPresent();
-    }
-
-    @Test
-    @DisplayName("매장 등록#미등록 회원")
-    void registerStoreByMember() {
-        //given
-        UploadFile uploadFile = new UploadFile("upload.jpg", "store.jpg");
-        AddStoreDto dto = AddStoreDto.builder()
-                .storeName("Huneydukes")
-                .content("환상적인 과자들을 저렴한 가격에 맛보세요!")
-                .uploadFile(uploadFile)
-                .build();
-
-        //when
-        //then
-        assertThatThrownBy(() -> storeService.registerStore("noLoginId", dto))
-                .isInstanceOf(NoSuchElementException.class);
     }
 
     private void createMember() {

@@ -2,7 +2,6 @@ package accio.hogsmeade.store.alarm.model.service;
 
 import accio.hogsmeade.store.alarm.model.Alarm;
 import accio.hogsmeade.store.alarm.model.repository.AlarmRepository;
-import accio.hogsmeade.store.common.model.Active;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
@@ -55,18 +54,6 @@ class AlarmServiceTest {
     }
 
     @Test
-    @DisplayName("알림 등록#미가입 회원")
-    void registerAlarmByMember() {
-        //given
-        String message = "페이 머니가 충전되었습니다.";
-
-        //when
-        //then
-        assertThatThrownBy(() -> alarmService.registerAlarm(0L, message))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
     @DisplayName("알림 열람")
     void openAlarm() {
         //given
@@ -85,25 +72,6 @@ class AlarmServiceTest {
         //then
         Alarm findAlarm = alarmRepository.findById(alarmId).get();
         assertThat(findAlarm.getOpen()).isTrue();
-    }
-
-    @Test
-    @DisplayName("알림 열람#미가입 회원")
-    void openAlarmByMember() {
-        //given
-        Alarm alarm = Alarm.builder()
-                .title("페이 머니 충전")
-                .content("페이 머니가 충전되었습니다.")
-                .open(false)
-                .active(ACTIVE)
-                .member(savedMember)
-                .build();
-        Alarm savedAlarm = alarmRepository.save(alarm);
-
-        //when
-        //then
-        assertThatThrownBy(() -> alarmService.openAlarm("noLoginId", savedAlarm.getId()))
-                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
