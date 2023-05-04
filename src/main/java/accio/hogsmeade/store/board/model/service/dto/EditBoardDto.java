@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class UpdateBoardDto {
+public class EditBoardDto {
     private Long categoryId;
     private String title;
     private String content;
     private UploadFile uploadFileName;
 
     @Builder
-    public UpdateBoardDto(Long categoryId, String title, String content, UploadFile uploadFileName) {
+    public EditBoardDto(Long categoryId, String title, String content, UploadFile uploadFileName) {
         this.categoryId = categoryId;
         this.title = title;
         this.content = content;

@@ -1,6 +1,5 @@
 package accio.hogsmeade.store.board.model;
 
-import accio.hogsmeade.store.board.model.service.dto.UpdateBoardDto;
 import accio.hogsmeade.store.common.model.Active;
 import accio.hogsmeade.store.common.model.TimeBaseEntity;
 import accio.hogsmeade.store.common.model.UploadFile;

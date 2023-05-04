@@ -6,7 +6,8 @@ import accio.hogsmeade.store.board.model.repository.BoardRepository;
 import accio.hogsmeade.store.board.model.repository.CategoryRepository;
 import accio.hogsmeade.store.board.model.service.BoardService;
 import accio.hogsmeade.store.board.model.service.dto.AddBoardDto;
-import accio.hogsmeade.store.board.model.service.dto.UpdateBoardDto;
+import accio.hogsmeade.store.board.model.service.dto.BoardDto;
+import accio.hogsmeade.store.board.model.service.dto.EditBoardDto;
 import accio.hogsmeade.store.common.exception.AuthorityException;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
@@ -48,12 +49,12 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Long updateBoard(String loginId, Long boardId, UpdateBoardDto updateBoardDto) {
+    public Long editBoard(String loginId, Long boardId, EditBoardDto editBoardDto) {
         Optional<Member> findMember = memberRepository.findByLoginId(loginId);
         if (findMember.isEmpty()) {
             throw new NoSuchElementException();
         }
-        Optional<Category> findCategory = categoryRepository.findById(updateBoardDto.getCategoryId());
+        Optional<Category> findCategory = categoryRepository.findById(editBoardDto.getCategoryId());
         if (findCategory.isEmpty()) {
             throw new NoSuchElementException();
         }
@@ -69,9 +70,9 @@ public class BoardServiceImpl implements BoardService {
 
         Category category = findCategory.get();
         board.changeBoard(
-                updateBoardDto.getTitle(),
-                updateBoardDto.getContent(),
-                updateBoardDto.getUploadFileName(),
+                editBoardDto.getTitle(),
+                editBoardDto.getContent(),
+                editBoardDto.getUploadFileName(),
                 category);
         return board.getId();
     }
