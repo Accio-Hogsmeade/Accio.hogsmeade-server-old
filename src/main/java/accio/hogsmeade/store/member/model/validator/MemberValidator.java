@@ -17,4 +17,9 @@ public class MemberValidator {
         return memberRepository.findByLoginId(loginId)
                 .orElseThrow(NoSuchElementException::new);
     }
+
+    public Member findByTel(String tel) {
+        return memberRepository.findByTel(tel)
+                .orElseThrow(NoSuchElementException::new);
+    }
 }
