@@ -7,6 +7,7 @@ import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.store.model.Store;
 import accio.hogsmeade.store.store.model.repository.StoreRepository;
 import accio.hogsmeade.store.store.model.service.dto.AddStoreDto;
+import accio.hogsmeade.store.store.model.service.dto.EditStoreDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,32 @@ class StoreServiceTest {
         //then
         Optional<Store> findStore = storeRepository.findById(storeId);
         assertThat(findStore).isPresent();
+    }
+
+    @Test
+    @DisplayName("매장 정보 수정")
+    void editStore() {
+        //given
+        UploadFile uploadFile = new UploadFile("upload.jpg", "store.jpg");
+        Store store = Store.builder()
+                .storeName("Huneydukes")
+                .content("환상적인 과자들을 저렴한 가격에 맛보세요!")
+                .uploadFile(uploadFile)
+                .member(savedMember)
+                .build();
+        Store savedStore = storeRepository.save(store);
+
+        EditStoreDto dto = EditStoreDto.builder()
+                .content("다양하고 환상적인 과자들을 저렴한 가격에 맛보세요!")
+                .uploadFile(uploadFile)
+                .build();
+
+        //when
+        Long storeId = storeService.editStore(savedStore.getId(), dto);
+
+        //then
+        Store findStore = storeRepository.findById(storeId).get();
+        assertThat(findStore.getContent()).isEqualTo(dto.getContent());
     }
 
     private void createMember() {
