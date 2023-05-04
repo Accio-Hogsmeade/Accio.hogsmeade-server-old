@@ -119,14 +119,15 @@ class BoardServiceTest {
                 .build();
 
         //when
-        boardService.updateBoard(savedMember.getLoginId(), savedBoard.getId(), updateBoardDto);
+        Long updateBoard = boardService.updateBoard(savedMember.getLoginId(), savedBoard.getId(), updateBoardDto);
+        assertThat(updateBoard).isEqualTo(savedBoard.getId());
     }
 
     private AddBoardDto getAddBoardDto() {
         return AddBoardDto.builder()
                 .title("제목")
                 .content("내용")
-                .uploadFile(null)
+//                .uploadFile(null)
                 .build();
     }
 }
