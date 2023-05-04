@@ -4,23 +4,21 @@ import accio.hogsmeade.store.common.exception.FindAccountException;
 import accio.hogsmeade.store.jwt.JwtTokenProvider;
 import accio.hogsmeade.store.jwt.TokenInfo;
 import accio.hogsmeade.store.member.model.Member;
-import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.member.model.service.AccountService;
+import accio.hogsmeade.store.member.model.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    private final MemberRepository memberRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberValidator memberValidator;
 
     @Override
     public TokenInfo login(String loginId, String loginPw) {
@@ -38,9 +36,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String findLoginId(String name, String tel) {
-        Member member = getMemberByTel(tel);
+        Member member = memberValidator.findByTel(tel);
 
-        if (!member.getName().equals(name)) {
+        if (isNotEqualName(member, name)) {
             throw new FindAccountException();
         }
 
@@ -49,31 +47,24 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public int findLoginPw(String name, String tel, String loginId) {
-        Member member = getMemberByTel(tel);
-        if (isEqualName(member, name)) {
+        Member member = memberValidator.findByTel(tel);
+
+        if (isNotEqualName(member, name)) {
             throw new FindAccountException();
         }
 
-        if (isEqualLoginId(member, loginId)) {
+        if (isNotEqualLoginId(member, loginId)) {
             throw new FindAccountException();
         }
 
         return 1;
     }
 
-    private Member getMemberByTel(String tel) {
-        Optional<Member> findMember = memberRepository.findByTel(tel);
-        if (findMember.isEmpty()) {
-            throw new FindAccountException();
-        }
-        return findMember.get();
-    }
-
-    private boolean isEqualName(Member member, String name) {
+    private boolean isNotEqualName(Member member, String name) {
         return !member.getName().equals(name);
     }
 
-    private boolean isEqualLoginId(Member member, String loginId) {
+    private boolean isNotEqualLoginId(Member member, String loginId) {
         return !member.getLoginId().equals(loginId);
     }
 }
