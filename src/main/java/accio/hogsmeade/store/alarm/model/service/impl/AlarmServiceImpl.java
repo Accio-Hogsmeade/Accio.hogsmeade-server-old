@@ -5,14 +5,12 @@ import accio.hogsmeade.store.alarm.model.repository.AlarmRepository;
 import accio.hogsmeade.store.alarm.model.service.AlarmService;
 import accio.hogsmeade.store.common.exception.AuthorityException;
 import accio.hogsmeade.store.member.model.Member;
-import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import accio.hogsmeade.store.member.model.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
