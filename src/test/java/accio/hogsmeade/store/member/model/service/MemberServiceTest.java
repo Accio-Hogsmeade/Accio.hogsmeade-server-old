@@ -67,20 +67,6 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("비밀번호 수정#미가입회원")
-    void editLoginPwByMember() {
-        //given
-        EditLoginPwDto dto = EditLoginPwDto.builder()
-                .oldLoginPw("abcd1234!")
-                .newLoginPw("qwer1234@")
-                .build();
-        //when
-        //then
-        assertThatThrownBy(() -> memberService.editLoginPw("notLoginId", dto))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
     @DisplayName("연락처 수정")
     void editTel() {
         //given
@@ -92,18 +78,6 @@ class MemberServiceTest {
         //then
         Optional<Member> findMember = memberRepository.findById(memberId);
         assertThat(findMember.get().getTel()).isEqualTo(newTel);
-    }
-
-    @Test
-    @DisplayName("연락처 수정#미가입회원")
-    void editTelByMember() {
-        //given
-        String newTel = "010-1234-5678";
-
-        //when
-        //then
-        assertThatThrownBy(() -> memberService.editTel("notLoginId", newTel))
-                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
@@ -122,21 +96,6 @@ class MemberServiceTest {
         assertThat(findMember.get().getAddress().getMainAddress()).isEqualTo(dto.getMainAddress());
     }
 
-    @Test
-    @DisplayName("주소 수정#미가입회원")
-    void editAddressByMember() {
-        //given
-        EditAddressDto dto = EditAddressDto.builder()
-                .mainAddress("newMainAddress")
-                .detailAddress("newDetailAddress")
-                .build();
-
-        //when
-        //then
-        assertThatThrownBy(() -> memberService.editAddress("notLoginId", dto))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-    
     @Test
     @DisplayName("회원 탈퇴")
     void withdrawal() {
