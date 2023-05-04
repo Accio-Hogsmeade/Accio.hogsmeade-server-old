@@ -56,6 +56,28 @@ class MemberValidatorTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
+    @Test
+    @DisplayName("tel로 회원 조회")
+    void findByTel() {
+        //given
+
+        //when
+        Member findMember = memberValidator.findByTel(savedMember.getTel());
+
+        //then
+        assertThat(findMember.getId()).isEqualTo(savedMember.getId());
+    }
+
+    @Test
+    @DisplayName("tel로 회원 조회#예외")
+    void findByTelException() {
+        //given
+        //when
+        //then
+        assertThatThrownBy(() -> memberValidator.findByTel("010-0000-0000"))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
     private void createMember() {
         Address address = Address.builder().mainAddress("mainAddress").detailAddress("detailAddress").build();
         Member member = Member.builder()
