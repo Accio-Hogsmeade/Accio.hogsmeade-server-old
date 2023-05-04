@@ -5,6 +5,7 @@ import accio.hogsmeade.store.board.model.Category;
 import accio.hogsmeade.store.board.model.repository.BoardRepository;
 import accio.hogsmeade.store.board.model.repository.CategoryRepository;
 import accio.hogsmeade.store.board.model.service.dto.AddBoardDto;
+import accio.hogsmeade.store.board.model.service.dto.EditBoardDto;
 import accio.hogsmeade.store.common.model.Address;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
@@ -99,11 +100,34 @@ class BoardServiceTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
+    @Test
+    @DisplayName("게시판 글 수정")
+    void editBoard() {
+        //given
+        AddBoardDto addBoardDto = getAddBoardDto();
+        Board savedBoard = boardRepository.save(Board.builder()
+                .title(addBoardDto.getTitle())
+                .content(addBoardDto.getContent())
+                .category(savedCategory)
+                .member(savedMember)
+                .build());
+        EditBoardDto editBoardDto = EditBoardDto.builder()
+                .categoryId(savedCategory.getId())
+                .uploadFileName(null)
+                .title("123")
+                .content("456")
+                .build();
+
+        //when
+        Long editBoard = boardService.editBoard(savedMember.getLoginId(), savedBoard.getId(), editBoardDto);
+        assertThat(editBoard).isEqualTo(savedBoard.getId());
+    }
+
     private AddBoardDto getAddBoardDto() {
         return AddBoardDto.builder()
                 .title("제목")
                 .content("내용")
-                .uploadFile(null)
+//                .uploadFile(null)
                 .build();
     }
 }

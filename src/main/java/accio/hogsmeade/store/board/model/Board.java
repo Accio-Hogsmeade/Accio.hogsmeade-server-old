@@ -23,7 +23,8 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Board extends TimeBaseEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "board_id")
     private Long id;
     @Column(nullable = false, length = 50)
@@ -54,6 +55,13 @@ public class Board extends TimeBaseEntity {
         this.status = status;
         this.active = active;
         this.member = member;
+        this.category = category;
+    }
+
+    public void changeBoard(String title, String content, UploadFile uploadFile, Category category) {
+        this.title = title;
+        this.content = content;
+        this.uploadFile = uploadFile;
         this.category = category;
     }
 }
