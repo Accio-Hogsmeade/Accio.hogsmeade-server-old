@@ -45,8 +45,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         board.createdDate,
                         board.uploadFile))
                 .from(board)
-                .join(member).fetchJoin()
-                .join(category).fetchJoin()
+                .join(board.member, member)
+                .join(board.category, category)
                 .where(isKeyword(condition.getKeyword()))
                 .orderBy(board.createdDate.desc())
                 .offset(pageable.getOffset())

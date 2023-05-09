@@ -15,17 +15,19 @@ public class BoardResponse {
     private String title;
     private int hit;
     private Identity identity;
-    private String createdDate;
+    private LocalDateTime createdDate;
     private boolean file;
 
-    @Builder
+    public BoardResponse() {
+    }
     public BoardResponse(Long boardId, String category, String title, int hit, Identity identity, LocalDateTime createdDate, UploadFile file) {
         this.boardId = boardId;
         this.category = category;
         this.title = title;
         this.hit = hit;
         this.identity = identity;
-        this.createdDate = createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//        this.createdDate = createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.createdDate = createdDate;
         this.file = file != null;
     }
 }

@@ -8,6 +8,8 @@ import accio.hogsmeade.store.board.model.service.BoardService;
 import accio.hogsmeade.store.board.model.service.dto.AddBoardDto;
 import accio.hogsmeade.store.board.model.service.dto.EditBoardDto;
 import accio.hogsmeade.store.jwt.SecurityUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,10 +23,12 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/boards")
+@Api(tags = {"게시판"})
 public class BoardApiController {
 
     private final BoardService boardService;
 
+    @ApiOperation(value = "게시판 등록")
     @PostMapping("/write")
     public Long write(@Valid @RequestBody AddBoardRequest request) {
         String loginId = SecurityUtil.getCurrentLoginId();
@@ -50,7 +54,6 @@ public class BoardApiController {
         return boardService.editBoard(loginId, boardId, editBoardDto);
     }
 
-    //search?a=xxx&b=xxx
     @GetMapping
     public Page<BoardResponse> list(
             @RequestParam(defaultValue = "") String keyword,
