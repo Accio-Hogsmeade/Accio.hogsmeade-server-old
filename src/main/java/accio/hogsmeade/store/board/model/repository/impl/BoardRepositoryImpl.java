@@ -1,5 +1,6 @@
 package accio.hogsmeade.store.board.model.repository.impl;
 
+import accio.hogsmeade.store.board.controller.dto.response.BoardDetailResponse;
 import accio.hogsmeade.store.board.controller.dto.response.BoardResponse;
 import accio.hogsmeade.store.board.model.Board;
 import accio.hogsmeade.store.board.model.QBoard;
@@ -58,6 +59,27 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .fetch()
                 .size();
         return new PageImpl<>(boardList, pageable, count);
+    }
+
+    @Override
+    public BoardDetailResponse searchById(Long boardId) {
+        BoardDetailResponse boardDetailResponse = queryFactory
+                .select(Projections.fields(BoardDetailResponse.class,
+                        board.id.as("boardId"),
+                        board.category.name.as("category"),
+                        board.title,
+                        board.content,
+                        board.hit,
+                        member.identity,
+                        board.createdDate,
+                        board.uploadFile,
+                        member.id.as("memberId")))
+                .from(board)
+                .join(member,board.member)
+                .join(board.category, category)
+                .where(board.id.eq(boardId))
+                .fetchOne();
+        return boardDetailResponse;
     }
 
     private BooleanExpression isKeyword(String keyword) {
