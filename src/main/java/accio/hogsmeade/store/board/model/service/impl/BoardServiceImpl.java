@@ -1,5 +1,6 @@
 package accio.hogsmeade.store.board.model.service.impl;
 
+import accio.hogsmeade.store.board.controller.dto.response.BoardDetailResponse;
 import accio.hogsmeade.store.board.controller.dto.response.BoardResponse;
 import accio.hogsmeade.store.board.model.Board;
 import accio.hogsmeade.store.board.model.Category;
@@ -83,5 +84,14 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Page<BoardResponse> getBoardList(BoardSearchCondition condition, Pageable pageable) {
         return boardRepository.searchByCondition(condition,pageable);
+    }
+
+    @Override
+    public BoardDetailResponse getBoard(Long boardId) {
+        BoardDetailResponse findBoard = boardRepository.searchById(boardId);
+        if(findBoard == null){
+            throw new NoSuchElementException();
+        }
+        return findBoard;
     }
 }

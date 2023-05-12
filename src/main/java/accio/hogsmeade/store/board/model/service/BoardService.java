@@ -1,5 +1,6 @@
 package accio.hogsmeade.store.board.model.service;
 
+import accio.hogsmeade.store.board.controller.dto.response.BoardDetailResponse;
 import accio.hogsmeade.store.board.controller.dto.response.BoardResponse;
 import accio.hogsmeade.store.board.model.repository.dto.BoardSearchCondition;
 import accio.hogsmeade.store.board.model.service.dto.AddBoardDto;
@@ -15,4 +16,6 @@ public interface BoardService {
     Long editBoard(String loginId, Long boardId, EditBoardDto editBoardDto);
 
     Page<BoardResponse> getBoardList(BoardSearchCondition condition, Pageable pageable);
+
+    BoardDetailResponse getBoard(Long boardId);
 }
