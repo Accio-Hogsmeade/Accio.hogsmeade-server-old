@@ -2,6 +2,7 @@ package accio.hogsmeade.store.board.controller;
 
 import accio.hogsmeade.store.board.controller.dto.AddBoardRequest;
 import accio.hogsmeade.store.board.controller.dto.EditBoardRequest;
+import accio.hogsmeade.store.board.controller.dto.response.BoardDetailResponse;
 import accio.hogsmeade.store.board.controller.dto.response.BoardResponse;
 import accio.hogsmeade.store.board.model.repository.dto.BoardSearchCondition;
 import accio.hogsmeade.store.board.model.service.BoardService;
@@ -10,6 +11,8 @@ import accio.hogsmeade.store.board.model.service.dto.EditBoardDto;
 import accio.hogsmeade.store.jwt.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -55,7 +58,7 @@ public class BoardApiController {
     }
 
     @GetMapping
-    public Page<BoardResponse> list(
+    public Result<?> list(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "") String category,
             @RequestParam(defaultValue = "1") Integer page
@@ -65,6 +68,19 @@ public class BoardApiController {
                 .category(category)
                 .build();
         PageRequest pageRequest = PageRequest.of(page, 20);
-        return boardService.getBoardList(condition, pageRequest);
+        Page<BoardResponse> boardList = boardService.getBoardList(condition, pageRequest);
+        return new Result<Page<BoardResponse>>(boardList);
+    }
+
+    @GetMapping("/{boardId}")
+    public Result<?> detail(@PathVariable Long boardId){
+        BoardDetailResponse board = boardService.getBoard(boardId);
+        return new Result<BoardDetailResponse>(board);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T>{
+        private T data;
     }
 }
