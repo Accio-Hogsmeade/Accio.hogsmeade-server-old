@@ -1,9 +1,11 @@
 package accio.hogsmeade.store.board.model.service.impl;
 
+import accio.hogsmeade.store.board.controller.dto.response.BoardResponse;
 import accio.hogsmeade.store.board.model.Board;
 import accio.hogsmeade.store.board.model.Category;
 import accio.hogsmeade.store.board.model.repository.BoardRepository;
 import accio.hogsmeade.store.board.model.repository.CategoryRepository;
+import accio.hogsmeade.store.board.model.repository.dto.BoardSearchCondition;
 import accio.hogsmeade.store.board.model.service.BoardService;
 import accio.hogsmeade.store.board.model.service.dto.AddBoardDto;
 import accio.hogsmeade.store.board.model.service.dto.EditBoardDto;
@@ -11,6 +13,8 @@ import accio.hogsmeade.store.common.exception.AuthorityException;
 import accio.hogsmeade.store.member.model.Member;
 import accio.hogsmeade.store.member.model.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -68,11 +72,16 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Category category = findCategory.get();
-        board.changeBoard(
-                editBoardDto.getTitle(),
-                editBoardDto.getContent(),
-                editBoardDto.getUploadFileName(),
-                category);
+//        board.changeBoard(
+//                editBoardDto.getTitle(),
+//                editBoardDto.getContent(),
+//                editBoardDto.getUploadFileName(),
+//                category);
         return board.getId();
+    }
+
+    @Override
+    public Page<BoardResponse> getBoardList(BoardSearchCondition condition, Pageable pageable) {
+        return boardRepository.searchByCondition(condition,pageable);
     }
 }
