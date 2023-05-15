@@ -18,4 +18,6 @@ public interface BoardService {
     Page<BoardResponse> getBoardList(BoardSearchCondition condition, Pageable pageable);
 
     BoardDetailResponse getBoard(Long boardId);
+
+    Long deactiveBoard(String loginId, Long boardId);
 }
