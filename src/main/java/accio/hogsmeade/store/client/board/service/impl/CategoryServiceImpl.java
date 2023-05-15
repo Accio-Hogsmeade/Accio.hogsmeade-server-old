@@ -10,6 +10,7 @@ import accio.hogsmeade.store.common.exception.DuplicateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -43,5 +44,10 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
         Category save = categoryRepository.save(category);
         return save.getId();
+    }
+
+    @Override
+    public List<Category> searchAll() {
+        return categoryRepository.findAll();
     }
 }
