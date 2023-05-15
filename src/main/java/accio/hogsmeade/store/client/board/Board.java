@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 
 import javax.persistence.*;
 
+import static accio.hogsmeade.store.common.model.Active.DEACTIVE;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.PROTECTED;
@@ -63,5 +64,9 @@ public class Board extends TimeBaseEntity {
         this.content = content;
         this.uploadFile = uploadFile;
         this.category = category;
+    }
+
+    public void changeActive(){
+        this.active = DEACTIVE;
     }
 }

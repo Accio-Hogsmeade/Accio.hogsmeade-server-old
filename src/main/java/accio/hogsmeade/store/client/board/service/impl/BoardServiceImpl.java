@@ -94,4 +94,25 @@ public class BoardServiceImpl implements BoardService {
         }
         return findBoard;
     }
+
+    @Override
+    public Long deactiveBoard(String loginId, Long boardId) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+        if (findMember.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        Optional<Board> findBoard = boardRepository.findById(boardId);
+        if (findBoard.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        Member member = findMember.get();
+        Board board = findBoard.get();
+        if (!board.getMember().getId().equals(member.getId())) {
+            throw new AuthorityException();
+        }
+
+        board.changeActive();
+        return board.getId();
+    }
 }
