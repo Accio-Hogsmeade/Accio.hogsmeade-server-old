@@ -77,6 +77,13 @@ public class BoardApiController {
         return new Result<BoardDetailResponse>(board);
     }
 
+    @PostMapping("/{boardId}")
+    public Long delete(@PathVariable Long boardId) {
+        String loginId = SecurityUtil.getCurrentLoginId();
+        log.debug("loginId = {}", loginId);
+        return boardService.deactiveBoard(loginId, boardId);
+    }
+
     @Data
     @AllArgsConstructor
     static class Result<T>{
